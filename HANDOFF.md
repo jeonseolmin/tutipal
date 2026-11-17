@@ -109,7 +109,7 @@ cd desktop && npx tsc --noEmit
 - 크롬 창이 최소화돼 있으면 확장 스크린샷이 타임아웃 → `find` / `read_page` 로 확인
 - Windows 콘솔(cp949)에 한글 JSON 을 찍으면 깨짐 → `PYTHONIOENCODING=utf-8`
 - 개발용 계정(dev-1)에 테스트로 만든 세션이 여러 개 남아 있음 (홈 목록이 김). 필요하면 각 세션에서 종료
-- 이 프로젝트는 **git 저장소가 아님**, 커밋 없음 (시작하려면 사용자 확인)
+- GitHub 공개 저장소 https://github.com/jeonseolmin/tutipal (2026-11-17). `main` 보호(리뷰 1명 승인 PR 만), 협업 규칙은 `CONTRIBUTING.md`. 커밋 끝에 `Co-Authored-By` 줄
 - 이 PC: RTX 3060 12GB, 32GB RAM, C: 여유 약 57GB, Windows 10 Home, Ollama 에 gemma3:12b · llama3.2
 
 ## 다음 할 일 (2단계, 세션 먼저로 확정)
@@ -118,7 +118,11 @@ cd desktop && npx tsc --noEmit
 3. ~~STOMP 실시간 (세션 쿠키 인증), `quiz`: 객관식/주관식 · AI 채점 · 실시간 정답률~~ ✅ (Python STOMP 점검 15항목 + 크롬 두 탭으로 선생님 · 학생 흐름 확인)
 4. ~~화면: 목업 11~13 · 15 · 16 · 20~24~~ ✅ (선생님 모드는 목업의 왼쪽 메뉴 대신 위쪽 탭)
 
-## 다음 할 일 (5단계까지 끝난 뒤)
+## 다음 할 일 (5단계까지 끝난 뒤) — 2026-11-17 부터는 GitHub 이슈가 기준
+- 이슈 #1 마크다운 표시 · #2 초대 코드 시도 제한 · #3 AI 호출 사용자별 제한 · #4 소셜 키 + 실제 로그인 · #5 공개 시연 접속(Tunnel · LiveKit) · #6 GitHub Actions · #7 설치 파일 서명 · #8 위젯 복습 제안 확인 · #9 유사도 기준 재조정 · #10 도움 방 강제 퇴장 · #11 선생님 메뉴 목업처럼
+- 라벨: backend · frontend · desktop · ai · infra · security (+ enhancement · bug)
+
+### (이전 메모)
 1. ~~미뤄 둔 코드 리뷰~~ ✅ 2026-11-17 (아래 "코드 리뷰 반영"). **서버 재배포 필요: `docker compose up -d --build`** (리뷰 반영 때 Docker Desktop 이 꺼져 있었음, V8 마이그레이션 포함)
 2. 챗봇 답변 마크다운 표시 (`**` 가 그대로 보임, 1단계부터)
 3. 소셜 키 발급 후 실제 카카오 · 네이버 · 구글 앱 로그인 확인, 설치 파일 코드 서명
@@ -170,4 +174,4 @@ cd desktop && npx tsc --noEmit
 - 이 PC 상태: `HKCU\Software\Classes\tutipal` 등록됨 (electron.exe + desktop 폴더), 화면 분석은 꺼 둠 (userData/screen.json enabled=false)
 
 ## 남은 결정 · 확인
-- 서브도메인 · 소셜 키 발급, git 시작 여부 (복습 기준 · 임베딩은 2026-11-16 확정)
+- 서브도메인 · 소셜 키 발급 (이슈 #4 · #5). 복습 기준 · 임베딩은 2026-11-16 확정, git 은 2026-11-17 시작
