@@ -50,22 +50,29 @@ function Head({ mood, title, text }) {
 /** 복습 기록 동의 (끄면 서버가 기존 기록도 지움) */
 function useReviewConsent() {
   const [on, setOn] = useState(null)
+  const [error, setError] = useState('')
   useEffect(() => {
-    reviewApi.consent().then((c) => setOn(c.on), () => setOn(false))
+    // 못 읽었으면 null 로 두어 스위치를 막는다 (꺼짐으로 보이면 반대로 누르게 됨)
+    reviewApi.consent().then((c) => setOn(c.on), () => setError('복습 기록 설정을 불러오지 못했어요'))
   }, [])
   const toggle = async () => {
     const next = !on
-    await reviewApi.setConsent(next)
-    setOn(next)
+    try {
+      await reviewApi.setConsent(next)
+      setOn(next)
+      setError('')
+    } catch (e) {
+      setError(e instanceof Error ? e.message : '바꾸지 못했어요')
+    }
   }
-  return [on, toggle]
+  return [on, toggle, error]
 }
 
 function ScreenTab() {
   const navigate = useNavigate()
   const desktop = window.desktop
   const [screen, setScreen] = useState(null)
-  const [review, toggleReview] = useReviewConsent()
+  const [review, toggleReview, reviewError] = useReviewConsent()
 
   useEffect(() => {
     if (!desktop) return
@@ -103,6 +110,7 @@ function ScreenTab() {
         </span>
         <input type="checkbox" className="switch" checked={!!review} onChange={() => void toggleReview()} disabled={review === null} />
       </label>
+      {reviewError && <p className="error-text">{reviewError}</p>}
       <DeleteAll />
       <Logout />
     </>
@@ -148,11 +156,17 @@ function AccountTab() {
 function DeleteAll({ onDone }) {
   const [confirming, setConfirming] = useState(false)
   const [done, setDone] = useState(false)
+  const [error, setError] = useState('')
   async function run() {
-    await reviewApi.deleteAll()
+    try {
+      await reviewApi.deleteAll()
+      setDone(true)
+      setError('')
+      onDone?.()
+    } catch (e) {
+      setError(e instanceof Error ? e.message : '지우지 못했어요')
+    }
     setConfirming(false)
-    setDone(true)
-    onDone?.()
   }
   if (confirming) {
     return (
@@ -169,6 +183,7 @@ function DeleteAll({ onDone }) {
         <Icon name="trash" /> 기록 전체 삭제
       </button>
       {done && <span className="muted small">모두 지웠어요</span>}
+      {error && <span className="error-text">{error}</span>}
     </div>
   )
 }

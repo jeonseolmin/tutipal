@@ -135,7 +135,7 @@ export function ChatPanel({ topic, onTopicChange, sessionId, initialAsk, onAsked
         {onTopicChange ? (
           <div className="topic-select">
             <span className="muted">주제</span>
-            <SubjectPicker value={topic} onChange={onTopicChange} />
+            <SubjectPicker value={topic} onChange={onTopicChange} lazy />
           </div>
         ) : (
           <span className="badge">{topic} · 선생님 설정 적용</span>
