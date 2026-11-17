@@ -16,10 +16,10 @@
 ```sh
 cd backend && ./gradlew test
 cd ai && uv run --no-project --python 3.12 --with-requirements requirements.txt --with-requirements requirements-dev.txt pytest -q
-cd frontend && npm run build        # 타입 검사 포함
-cd desktop && npx tsc --noEmit
+cd frontend && npm run build        # Vite 빌드 (문법 · import 오류)
+cd desktop && npm run check        # node --check 로 문법 검사
 ```
-- 백엔드 DTO 를 바꾸면 `frontend/src/api/types.ts` 도 같이
+- 백엔드 DTO 를 바꾸면 `frontend/src/api/types.js`(JSDoc) 도 같이, 화면에서 그 필드를 쓰는 곳도 검색해서 같이 (타입 검사가 없음)
 - DB 를 바꾸면 `backend/src/main/resources/db/migration/V<다음번호>__설명.sql` 추가 (이미 합쳐진 마이그레이션은 고치지 않는다)
 - 화면을 바꿨으면 실제로 띄워서 확인 (`docker compose up -d --build` → http://localhost, 개발용 로그인)
 

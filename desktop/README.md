@@ -1,4 +1,4 @@
-# desktop — Electron 앱 (TypeScript) · 학생 + 선생님 모드
+# desktop — Electron 앱 (JavaScript) · 학생 + 선생님 모드
 
 화면은 따로 만들지 않고 서버 주소(`APP_BASE_URL`)의 React 화면(`frontend/`)을 그대로 연다.
 같은 주소라서 웹과 똑같은 **세션 쿠키**로 로그인한다 (리프레시 토큰 없음).
