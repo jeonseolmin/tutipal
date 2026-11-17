@@ -1,7 +1,7 @@
 import sheet from '../assets/sage-sprites.webp'
 
 /**
- * 학습 도우미 캐릭터 "Sage" (부엉이). 원본: 팀 디자인 Sage 스프라이트 시트.
+ * 학습 도우미 캐릭터 "Sage" (파란 부엉이, AI 안경 · 태블릿). 원본: 팀 디자인 sage-ai-glasses 스프라이트 시트.
  * 시트는 칸 192×208, 가로 8칸 × 세로 11줄. 줄마다 동작 하나 (frames = 그 줄에 그려진 칸 수).
  */
 const CELL_W = 192
@@ -12,7 +12,7 @@ const ROWS = {
   jumping: { row: 4, frames: 5, ms: 140 },
   failed: { row: 5, frames: 8, ms: 260 },
   waiting: { row: 6, frames: 6, ms: 200 },
-  thinking: { row: 7, frames: 6, ms: 240 }, // 시트 이름은 running, 실제 그림은 날개로 머리 짚고 생각하는 모습
+  thinking: { row: 7, frames: 6, ms: 240 }, // 시트 이름은 running (작업 · 처리 중), 생각하는 모습으로 씀
   review: { row: 8, frames: 6, ms: 220 },
   look: { row: 9, frames: 8, ms: 260 },
 }
