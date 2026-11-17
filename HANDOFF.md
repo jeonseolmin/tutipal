@@ -18,7 +18,7 @@ TUTIPAL = AI 도우미 챗봇이 붙은 데스크톱 학습 서비스 (포트폴
 ## 확정된 결정 (바꾸지 말 것, 바꾸려면 사용자 확인)
 | 항목 | 결정 |
 |---|---|
-| 앱 | 학생 · 선생님 모두 **Electron + TypeScript 하나** (선생님 = 앱 안 선생님 모드), 별도 웹 없음 |
+| 앱 | 학생 · 선생님 모두 **Electron 하나** (선생님 = 앱 안 선생님 모드), 별도 웹 없음. 화면 · 데스크톱 코드는 **JavaScript** (2026-11-17 팀 결정으로 TypeScript → JS, 서버 DTO 모양은 `api/types.js` JSDoc) |
 | 역할 | 계정은 `USER / ADMIN`, 선생님 · 학생은 **세션마다** (세션 연 사람 = 그 세션 TEACHER) |
 | 로그인 | 소셜(카카오 · 네이버 · 구글) + **세션 쿠키(Spring Session Redis)**, **리프레시 토큰 · JWT 로그인 없음** (BFF 패턴, RFC 10017) |
 | JWT | LiveKit 입장권에만 (짧은 유효시간) |
@@ -66,14 +66,14 @@ TUTIPAL = AI 도우미 챗봇이 붙은 데스크톱 학습 서비스 (포트폴
   - `global/config`: `SecurityConfig`(`/api/**`·`/ws/**`만 로그인, `loginPage("/login")`, `csrf.spa()`), `SpaConfig`, `DevLoginController`(`DEV_LOGIN=true` 일 때만), `WebSocketConfig`(STOMP 뼈대)
   - 빈 도메인(.gitkeep): auth · studysession · quiz · material · notice · qna · screenshare · screensummary · review
 - ai (`ai/app`): `POST /v1/extract`(txt · md · pdf, pypdf) · `POST /v1/embed`(Ollama `EMBEDDING_MODEL`=bge-m3) — DB 저장은 Spring. `POST /v1/chat` Ollama NDJSON 스트림 (`routers/chat.py`, `services/llm.py`, `deps.py`), `json_mode: true` 면 Ollama `format: json`, 메시지에 `images`(1장, 3MB 이하) 넣으면 비전
-- frontend (`frontend/src`): 디자인 토큰(`styles/`), SVG 캐릭터 `components/Mascot.tsx`(표정 8개), `AppShell`, 페이지 Login · Home · Chat · Widget, `api/`(types · client · tutor · sessions)
+- frontend (`frontend/src`): 디자인 토큰(`styles/`), SVG 캐릭터 `components/Mascot.jsx`(표정 8개), `AppShell`, 페이지 Login · Home · Chat · Widget, `api/`(types · client · tutor · sessions)
   - 세션 화면: `CreateSessionPage`(11) · `JoinSessionPage`(12) · `SessionPage`(역할별: 학생 13 = 라이브 자리 + 세션 챗봇 / 선생님 20·21 = 참가자 · 주제 설정 · 챗봇 미리보기 · 종료), 홈에 참여 중 세션 목록
   - `ChatPanel`(ChatPage 에서 분리)을 개인 · 세션 챗봇이 같이 씀
   - 실시간: `api/realtime.ts` `useSessionEvents` (@stomp/stompjs 7.5.0, 3초 재연결, 재연결 시 전체 다시 읽기), 머리말에 "실시간" 표시
-  - 이해도 질문: `pages/QuizPanels.tsx` — 선생님 탭(22 만들기 + AI 초안, 23 정답률 막대 · 응답 수 · 남은 시간, 24 응답 검토 · 맞음/틀림) / 학생 팝업(15 응답 + 타이머 → 16 결과, 주관식은 채점 중 → 실시간 결과)
+  - 이해도 질문: `pages/QuizPanels.jsx` — 선생님 탭(22 만들기 + AI 초안, 23 정답률 막대 · 응답 수 · 남은 시간, 24 응답 검토 · 맞음/틀림) / 학생 팝업(15 응답 + 타이머 → 16 결과, 주관식은 채점 중 → 실시간 결과)
   - 선생님 참가자 목록: 접속 중 초록 점, 참여 · 접속 변화 자동 갱신
-  - 4단계 화면: `pages/LivePanels.tsx` — 선생님 "화면 공유" 탭(27, 창 고르기 · 시청 수) · "도움 요청" 탭(25, 대기 시간 · 수락/나중에 · 새 요청 빨간 점) → 학생 화면 보기(26, 펜 · 형광펜 · 지우개 · 3색 · 모두 지우기) / 학생 "라이브" 탭(13) · 머리말 "✋ 도움 요청"(17) · 진행 중 칩. `pages/OverlayPage.tsx`(/overlay, 19). 그림 규칙 `draw.ts`(0~1 비율 좌표, 받은 메시지 검사) · livekit-client 2.23.0
-  - 5단계 화면: `pages/BoardPanels.tsx` — `MaterialsPanel`(28, 끌어다 놓기 업로드 · 처리 중/완료/실패) · `NoticesPanel`(29 왼쪽) · `BoardPanel`(29 오른쪽, 글 · 댓글). 선생님 "자료 · 공지" · "게시판" 탭, 학생 공지 · 게시판 · 자료 탭, 새 공지 토스트(31). `ReviewPage`(10, /review, 동의 스위치 · N번 봄/N분 봄 · 설명 듣기 · 기록 삭제), 위젯 복습 제안 말풍선(09) → 메인 창 `/review?explain=` → `/chat?ask=` 자동 질문. 챗봇 답변 아래 "참고한 수업 자료"
+  - 4단계 화면: `pages/LivePanels.jsx` — 선생님 "화면 공유" 탭(27, 창 고르기 · 시청 수) · "도움 요청" 탭(25, 대기 시간 · 수락/나중에 · 새 요청 빨간 점) → 학생 화면 보기(26, 펜 · 형광펜 · 지우개 · 3색 · 모두 지우기) / 학생 "라이브" 탭(13) · 머리말 "✋ 도움 요청"(17) · 진행 중 칩. `pages/OverlayPage.jsx`(/overlay, 19). 그림 규칙 `draw.js`(0~1 비율 좌표, 받은 메시지 검사) · livekit-client 2.23.0
+  - 5단계 화면: `pages/BoardPanels.jsx` — `MaterialsPanel`(28, 끌어다 놓기 업로드 · 처리 중/완료/실패) · `NoticesPanel`(29 왼쪽) · `BoardPanel`(29 오른쪽, 글 · 댓글). 선생님 "자료 · 공지" · "게시판" 탭, 학생 공지 · 게시판 · 자료 탭, 새 공지 토스트(31). `ReviewPage`(10, /review, 동의 스위치 · N번 봄/N분 봄 · 설명 듣기 · 기록 삭제), 위젯 복습 제안 말풍선(09) → 메인 창 `/review?explain=` → `/chat?ask=` 자동 질문. 챗봇 답변 아래 "참고한 수업 자료"
   - 3단계 화면: `LoginPage`(앱이면 소셜 버튼 → 브라우저 + 대기 화면 02) · `AppLoginDonePage`(/auth/app/done) · `ScreenConsentPage`(04, /screen-consent, 홈 · 위젯 · 트레이에서 열림) · `WidgetPage`(07: 40초마다 캡처, 바뀐 경우만 요약 / 08: 질문하기 → 지금 화면에 대해 질문, 꺼져 있으면 일반 챗봇)
   - 개발용 로그인 `POST /dev/login?n=1~9` → 계정 여러 개. 화면에서는 시크릿 창으로 `http://localhost/login?dev=2` → "개발용 로그인"
 - desktop (`desktop/src`): 메인 창 + 투명 캐릭터 위젯 창 + 트레이, 이동 제한(우리 서버만, 소셜 로그인 페이지도 앱 안에서 안 엶) · 권한 거절
@@ -91,8 +91,7 @@ cd desktop && npm run dev                    # 앱 (개발 모드)
 cd desktop && npm run dist                   # 설치 파일 release/TUTIPAL Setup 0.0.1.exe (desktop/README.md)
 cd backend && ./gradlew test                 # 71개 통과 (2026-11-17)
 cd ai && uv run --no-project --python 3.12 --with-requirements requirements.txt --with-requirements requirements-dev.txt pytest -q   # 15개 통과
-cd frontend && npm run build                 # 타입 검사 포함
-cd desktop && npx tsc --noEmit
+
 ```
 - 로그인: 앱/브라우저에서 "개발용 로그인 (내 PC 전용)" (`.env` 의 `DEV_LOGIN=true`). 소셜 키는 아직 더미값
 - 첫 챗봇 질문은 모델 로딩으로 30~50초, 이후 약 7초
@@ -109,7 +108,7 @@ cd desktop && npx tsc --noEmit
 - 크롬 창이 최소화돼 있으면 확장 스크린샷이 타임아웃 → `find` / `read_page` 로 확인
 - Windows 콘솔(cp949)에 한글 JSON 을 찍으면 깨짐 → `PYTHONIOENCODING=utf-8`
 - 개발용 계정(dev-1)에 테스트로 만든 세션이 여러 개 남아 있음 (홈 목록이 김). 필요하면 각 세션에서 종료
-- GitHub 공개 저장소 https://github.com/jeonseolmin/tutipal (2026-11-17). `main` 보호(리뷰 1명 승인 PR 만), 협업 규칙은 `CONTRIBUTING.md`. 커밋 끝에 `Co-Authored-By` 줄
+- GitHub 공개 저장소 https://github.com/jeonseolmin/tutipal (2026-11-17). `main` 보호(리뷰 1명 승인 PR 만), 협업 규칙은 `CONTRIBUTING.md`. 커밋 끝에 `Co-Authored-By` 줄. **PR 은 `develop` 으로** (`main` = 배포용, 2026-11-17)
 - 이 PC: RTX 3060 12GB, 32GB RAM, C: 여유 약 57GB, Windows 10 Home, Ollama 에 gemma3:12b · llama3.2
 
 ## 다음 할 일 (2단계, 세션 먼저로 확정)

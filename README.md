@@ -25,7 +25,7 @@ AI 조교: **LLM 이 직접 답하는 것이 기본**, 세션 자료 중 관련 
 
 | 항목 | 결정 | 이유 |
 |---|---|---|
-| 앱 | Electron + TypeScript 하나 (학생 · 선생님 모드), 별도 웹 없음 | 화면(React) 한 벌만 관리, 다른 프로그램 위 위젯·그림 오버레이는 앱만 가능 |
+| 앱 | Electron 하나 (학생 · 선생님 모드), 별도 웹 없음. 화면 · 데스크톱은 JavaScript (팀이 JS 에 익숙, 2026-11-17) | 화면(React) 한 벌만 관리, 다른 프로그램 위 위젯·그림 오버레이는 앱만 가능 |
 | nginx | 없음 — Spring 이 React 화면과 API 를 한 주소로 제공 | 모두 Electron, HTTPS 는 Cloudflare Tunnel 이 맡음 |
 | 역할 | 계정은 USER/ADMIN, **선생님/학생은 세션마다** (세션 참가자 역할) | 세션을 연 사람만 그 세션의 선생님 |
 | 로그인 | **세션 쿠키 (Redis) 하나로 통일**, 리프레시 토큰 없음 | 서버 1대 · 같은 주소 · 웹/Electron 모두 쿠키 사용 · 즉시 차단 |
@@ -44,8 +44,8 @@ TUTIPAL/
 ├─ docs/                  설계 그림
 ├─ frontend/              React + TS + Vite — 빌드 결과를 Spring 이미지에 넣어 Spring 이 제공 (Electron 이 서버 주소로 열어서 사용)
 │  └─ src/
-│     ├─ main.tsx · App.tsx
-│     ├─ api/             types.ts (백엔드 DTO 1:1) · client.ts (fetch · CSRF · 오류)
+│     ├─ main.jsx · App.jsx
+│     ├─ api/             types.js (백엔드 DTO 1:1, JSDoc) · client.js (fetch · CSRF · 오류)
 │     ├─ pages/           화면 단위 (홈 · 세션 · 챗봇 · 선생님 모드 · 캐릭터 위젯 …)
 │     └─ components/      공통 UI
 ├─ desktop/               Electron + TS (예정) — desktop/README.md
@@ -82,17 +82,29 @@ TUTIPAL/
 - 필요한 계층만 만든다 (예: `auth` 는 Redis 만 써서 entity/repository 없음)
 
 ### 프론트 규칙
-- 서버와 주고받는 코드는 `api/` 에만. 백엔드 DTO 를 바꾸면 `api/types.ts` 도 같이 수정
+- 서버와 주고받는 코드는 `api/` 에만. 백엔드 DTO 를 바꾸면 `api/types.js`(JSDoc) 도 같이 수정
 
-## 실행
+## 처음 실행하기 (팀원)
+
+준비물: Docker Desktop, [Ollama](https://ollama.com), Node 22+, JDK 21 (백엔드 테스트용), [uv](https://docs.astral.sh/uv/) (AI 테스트용)
 
 ```sh
-cp .env.example .env          # 값 채우기 (소셜 키 없이도 기동은 됨)
-docker compose up -d --build
-curl http://localhost/health  # {"status":"ok","virtualThread":true}
+git clone https://github.com/jeonseolmin/tutipal.git && cd tutipal
+cp .env.example .env
+#   ① POSTGRES_PASSWORD · REDIS_PASSWORD · AI_INTERNAL_KEY · LIVEKIT_API_SECRET 에 각자 랜덤 값
+#      python -c "import secrets; print(secrets.token_hex(32))"
+#   ② DEV_LOGIN=true (내 PC 에서만, 소셜 키 없이 로그인)
+ollama pull gemma3:12b && ollama pull bge-m3      # 한 번 (약 9GB). GPU 가 약하면 .env 의 OLLAMA_BASE_URL 을 팀장 PC 로
+docker compose up -d --build                      # backend · ai · db · redis · livekit
+curl http://localhost/health                      # {"status":"ok","virtualThread":true}
 ```
 
-브라우저에서 `http://localhost` → 카카오 · 네이버 · 구글 로그인 버튼.
+브라우저에서 `http://localhost` → "개발용 로그인 (내 PC 전용)". 앱은 `cd desktop && npm install && npm run dev`.
+값 설명은 `.env.example` 주석, 협업 규칙은 `CONTRIBUTING.md`, AI 에이전트 규칙은 `AGENTS.md`.
+
+## 실행 (소셜 로그인)
+
+소셜 키를 받았으면 `.env` ③ 에 넣고 `docker compose up -d --build` → 브라우저 `http://localhost` → 카카오 · 네이버 · 구글 로그인 버튼.
 5432 를 이미 쓰는 PostgreSQL 이 있으면 `.env` 의 `DB_HOST_PORT=5433` 그대로 둔다.
 
 ### 화면 개발
@@ -101,7 +113,6 @@ curl http://localhost/health  # {"status":"ok","virtualThread":true}
 docker compose up -d db redis ai
 cd backend && ./gradlew bootRun              # 8080 (.env 값을 환경변수로)
 cd frontend && npm install && npm run dev    # http://localhost:5173, /api 등은 8080 으로 프록시
-npm run typecheck                            # 타입 검사만 (build 도 먼저 검사)
 cd backend && ./gradlew test
 ```
 
