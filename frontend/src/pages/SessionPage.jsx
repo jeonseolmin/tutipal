@@ -19,7 +19,7 @@ export default function SessionPage() {
   const [error, setError] = useState('')
 
   const reload = useCallback(() => {
-    sessions.get(id).then(setSession, (e) => setError(e instanceof Error ? e.message : '세션을 열지 못했어요'))
+    sessions.get(id).then(setSession, (e) => setError(e instanceof Error ? e.message : '방을 열지 못했어요'))
   }, [id])
   useEffect(reload, [reload])
 
@@ -40,7 +40,7 @@ export default function SessionPage() {
       <div className="center-page">
         <div className="card session-card">
           <Mascot mood="sleep" size={110} />
-          <p>「{session.title}」 세션은 끝났어요</p>
+          <p>「{session.title}」 방은 닫혔어요</p>
           <Link to="/" className="btn">홈으로</Link>
         </div>
       </div>
@@ -319,10 +319,10 @@ function EndButton({ session, onChange }) {
   return confirming ? (
     <span className="tabs-end">
       <span className="muted">학생 참여와 챗봇이 막혀요.</span>
-      <button className="btn btn-sm btn-danger" onClick={() => void end()}>세션 종료</button>
+      <button className="btn btn-sm btn-danger" onClick={() => void end()}>방 닫기</button>
       <button className="btn btn-sm" onClick={() => setConfirming(false)}>취소</button>
     </span>
   ) : (
-    <button className="btn btn-sm tabs-end" onClick={() => setConfirming(true)}>세션 종료…</button>
+    <button className="btn btn-sm tabs-end" onClick={() => setConfirming(true)}>방 닫기…</button>
   )
 }

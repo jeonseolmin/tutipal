@@ -70,9 +70,9 @@ public class StudySessionService {
     @Transactional
     public SessionResponse join(Long userId, String code) {
         StudySession session = sessions.findByInviteCode(InviteCodes.normalize(code))
-                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "코드에 맞는 세션이 없어요"));
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "코드에 맞는 방이 없어요"));
         if (session.isEnded()) {
-            throw new ApiException(HttpStatus.GONE, "이미 끝난 세션이에요");
+            throw new ApiException(HttpStatus.GONE, "이미 닫힌 방이에요");
         }
         SessionParticipant me = participants.findBySessionIdAndUserId(session.getId(), userId)
                 .orElseGet(() -> {
@@ -166,24 +166,24 @@ public class StudySessionService {
 
     private SessionParticipant requireParticipant(Long sessionId, Long userId) {
         return participants.findBySessionIdAndUserId(sessionId, userId)
-                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "세션을 찾을 수 없어요"));
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "방을 찾을 수 없어요"));
     }
 
     private void requireTeacher(Long sessionId, Long userId) {
         if (!requireParticipant(sessionId, userId).isTeacher()) {
-            throw new ApiException(HttpStatus.FORBIDDEN, "이 세션의 선생님만 할 수 있어요");
+            throw new ApiException(HttpStatus.FORBIDDEN, "이 방의 선생님만 할 수 있어요");
         }
     }
 
     private StudySession findSession(Long sessionId) {
         return sessions.findById(sessionId)
-                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "세션을 찾을 수 없어요"));
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "방을 찾을 수 없어요"));
     }
 
     private StudySession requireActive(Long sessionId) {
         StudySession session = findSession(sessionId);
         if (session.isEnded()) {
-            throw new ApiException(HttpStatus.GONE, "이미 끝난 세션이에요");
+            throw new ApiException(HttpStatus.GONE, "이미 닫힌 방이에요");
         }
         return session;
     }

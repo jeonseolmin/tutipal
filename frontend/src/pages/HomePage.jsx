@@ -31,7 +31,7 @@ export default function HomePage() {
       </header>
 
       {mine.length > 0 && (
-        <section className="my-sessions" aria-label="참여 중인 세션">
+        <section className="my-sessions" aria-label="참여 중인 방">
           {mine.map((s) => (
             <Link key={s.id} to={`/sessions/${s.id}`} className="card my-session">
               <span className="badge badge-primary">{s.myRole === 'TEACHER' ? '선생님' : '학생'}</span>
