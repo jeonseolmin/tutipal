@@ -108,7 +108,7 @@ cd ai && uv run --no-project --python 3.12 --with-requirements requirements.txt 
 - 크롬 창이 최소화돼 있으면 확장 스크린샷이 타임아웃 → `find` / `read_page` 로 확인
 - Windows 콘솔(cp949)에 한글 JSON 을 찍으면 깨짐 → `PYTHONIOENCODING=utf-8`
 - 개발용 계정(dev-1)에 테스트로 만든 세션이 여러 개 남아 있음 (홈 목록이 김). 필요하면 각 세션에서 종료
-- GitHub 공개 저장소 https://github.com/jeonseolmin/tutipal (2026-11-17). `main` 보호(리뷰 1명 승인 PR 만), 협업 규칙은 `CONTRIBUTING.md`. 커밋 끝에 `Co-Authored-By` 줄
+- GitHub 공개 저장소 https://github.com/jeonseolmin/tutipal (2026-11-17). `main` 보호(리뷰 1명 승인 PR 만), 협업 규칙은 `CONTRIBUTING.md`. 커밋 끝에 `Co-Authored-By` 줄. **PR 은 `develop` 으로** (`main` = 배포용, 2026-11-17)
 - 이 PC: RTX 3060 12GB, 32GB RAM, C: 여유 약 57GB, Windows 10 Home, Ollama 에 gemma3:12b · llama3.2
 
 ## 다음 할 일 (2단계, 세션 먼저로 확정)

@@ -8,7 +8,9 @@
 - 맡을 이슈에 자기를 Assignee 로 지정하고 시작한다 (겹치지 않게)
 
 ## 브랜치 · PR
-- `main` 에는 직접 push 하지 않는다 (보호됨). 이슈마다 브랜치: `feat/12-markdown-chat`, `fix/15-invite-limit` (`종류/이슈번호-짧은설명`)
+- 브랜치: `main` = 배포(시연)용, `develop` = 작업이 모이는 곳. **PR 은 `develop` 으로 보낸다**
+- 이슈마다 `develop` 에서 브랜치: `feat/12-markdown-chat`, `fix/15-invite-limit` (`종류/이슈번호-짧은설명`)
+- `main` 에는 직접 push 하지 않는다 (보호됨). `develop` → `main` 은 시연 · 배포 때 PR 로
 - PR 본문에 `Closes #12`, 무엇을 · 왜 · 어떻게 확인했는지 적는다
 - 리뷰 1명 승인 후 합친다 (Squash merge)
 

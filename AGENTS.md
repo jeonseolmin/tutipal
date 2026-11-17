@@ -46,7 +46,7 @@ Claude Code · Codex · Cursor 등 어떤 도구든 작업 전에 이 파일을 
 - `AiClient` 의 HTTP/1.1 고정 되돌리기 (uvicorn 이 HTTP/2 업그레이드를 거부함)
 - Redis 클라이언트를 Jedis 로 바꾸기, `synchronized` 안에서 오래 막기 (가상 스레드 고정 → `ReentrantLock`)
 - 이유 없이 새 의존성 추가. 추가하면 **정확한 버전 고정**(2주 이상 지난 릴리스) + PR 에 이유
-- 확인 없이 대량 삭제 · 강제 push · `main` 직접 push
+- 확인 없이 대량 삭제 · 강제 push · `main` 직접 push. 작업 브랜치는 `develop` 에서 따고 PR 도 `develop` 으로
 
 ## 알고 둔 단순화: `ponytail:` 주석
 코드의 `// ponytail: ...` 는 일부러 단순하게 둔 곳이다. 한계와 다음 방법이 적혀 있으니, 그 한계를 넘는 일을 하면 거기부터 고친다.
