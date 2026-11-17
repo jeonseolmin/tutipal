@@ -59,7 +59,9 @@
 .chat-page { height: 100%; display: flex; flex-direction: column; padding: 24px 28px; border-radius: var(--radius-lg); }
 .chat-head { display: flex; align-items: center; gap: 14px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
 .chat-head h1 { margin: 0; font-size: 30px; letter-spacing: -0.5px; }
-.topic-select select { border: 0; background: transparent; color: var(--primary); font-weight: 700; cursor: pointer; }
+.topic-select { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+.topic-select .subject-picker { flex-direction: row; width: auto; }
+.topic-select .subject-picker select, .topic-select .subject-picker input { height: 42px; font-size: 15px; width: 200px; }
 .chat-list { flex: 1; overflow: auto; padding: 20px 4px; display: flex; flex-direction: column; gap: 16px; }
 .chat-empty { margin: auto; text-align: center; color: var(--text-2); }
 .chips { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }

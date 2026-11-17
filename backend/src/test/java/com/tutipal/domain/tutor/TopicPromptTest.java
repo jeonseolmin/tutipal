@@ -12,9 +12,11 @@ import com.tutipal.global.exception.ApiException;
 class TopicPromptTest {
 
     @Test
-    void parsesTopicIgnoringCaseAndSpaces() {
-        assertEquals(TopicPrompt.CODING, TopicPrompt.from("coding"));
-        assertEquals(TopicPrompt.MATH, TopicPrompt.from(" MATH "));
+    void personalPromptAcceptsOldIdsAndNames() {
+        assertEquals(TopicPrompt.CODING.systemPrompt(), TopicPrompt.personalPrompt("coding"));
+        assertEquals(TopicPrompt.MATH.systemPrompt(), TopicPrompt.personalPrompt(" MATH "));
+        assertEquals(TopicPrompt.GENERAL.systemPrompt(), TopicPrompt.personalPrompt("자유 주제"));
+        assertTrue(TopicPrompt.personalPrompt("한국사").contains("\"한국사\""));
     }
 
     @Test
@@ -43,9 +45,9 @@ class TopicPromptTest {
     }
 
     @Test
-    void unknownTopicIsBadRequest() {
-        ApiException e = assertThrows(ApiException.class, () -> TopicPrompt.from("history"));
+    void blankTopicIsBadRequest() {
+        ApiException e = assertThrows(ApiException.class, () -> TopicPrompt.personalPrompt("  "));
         assertEquals(HttpStatus.BAD_REQUEST, e.getStatus());
-        assertThrows(ApiException.class, () -> TopicPrompt.from(null));
+        assertThrows(ApiException.class, () -> TopicPrompt.personalPrompt(null));
     }
 }

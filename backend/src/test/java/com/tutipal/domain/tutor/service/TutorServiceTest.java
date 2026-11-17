@@ -88,11 +88,21 @@ class TutorServiceTest {
     }
 
     @Test
-    void unknownTopicFailsBeforeCallingAi() {
+    void blankTopicFailsBeforeCallingAi() {
         FakeAi ai = new FakeAi();
         TutorService service = new TutorService(ai, null, null, new AiSlots(1, Duration.ofMillis(100)));
-        assertThrows(ApiException.class, () -> service.chat(1L, request("history"), s -> { }, d -> { }));
+        assertThrows(ApiException.class, () -> service.chat(1L, request("   "), s -> { }, d -> { }));
         assertEquals(null, ai.system);
+    }
+
+    @Test
+    void personalChatTakesAnySubjectName() {
+        FakeAi ai = new FakeAi();
+        TutorService service = new TutorService(ai, null, null, new AiSlots(1, Duration.ofMillis(100)));
+        service.chat(1L, request("한국사"), s -> { }, d -> { });
+        assertTrue(ai.system.endsWith("\"한국사\""), ai.system);
+        service.chat(1L, request("코딩"), s -> { }, d -> { });
+        assertEquals(TopicPrompt.CODING.systemPrompt(), ai.system);
     }
 
     @Test

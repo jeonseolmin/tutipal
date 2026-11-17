@@ -37,7 +37,7 @@ public class TutorService {
     public void chat(Long userId, ChatRequest request, Consumer<List<String>> onSources, Consumer<String> onDelta) {
         String system;
         if (request.sessionId() == null) {
-            system = TopicPrompt.from(request.topic()).systemPrompt();
+            system = TopicPrompt.personalPrompt(request.topic());
         } else {
             ChatSettings settings = sessions.chatSettings(userId, request.sessionId());
             String question = request.messages().getLast().content();
