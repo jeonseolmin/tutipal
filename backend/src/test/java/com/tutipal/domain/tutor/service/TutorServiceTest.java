@@ -97,12 +97,12 @@ class TutorServiceTest {
 
     @Test
     void sessionPromptAddsTeacherSettings() {
-        String hidden = TutorService.sessionPrompt(new ChatSettings(TopicPrompt.MATH, 1, true, false));
+        String hidden = TutorService.sessionPrompt(new ChatSettings("수학", 1, true, false));
         assertTrue(hidden.startsWith(TopicPrompt.MATH.systemPrompt()));
         assertTrue(hidden.contains("아주 쉬운 말로"));
         assertTrue(hidden.contains("바로 알려주지 않는다"));
 
-        String open = TutorService.sessionPrompt(new ChatSettings(TopicPrompt.CODING, 5, false, false));
+        String open = TutorService.sessionPrompt(new ChatSettings("코딩", 5, false, false));
         assertTrue(open.contains("심화"));
         assertTrue(!open.contains("바로 알려주지 않는다"));
     }

@@ -15,6 +15,10 @@ const EXAMPLES = {
   math: ['이차방정식 근의 공식 유도해줘', '미분과 적분의 관계가 뭐야?'],
 }
 
+/** 개인 챗봇은 general 등 id, 단체 방은 과목 이름("한국사") 이 온다 */
+const topicLabel = (topic) => TOPIC_LABEL[topic] ?? topic
+const examplesOf = (topic) => EXAMPLES[topic] ?? [`${topic} 기초부터 차근차근 알려줘`, `${topic} 공부 순서를 짜 줘`]
+
 function toTopic(value) {
   return value && value in TOPIC_LABEL ? (value) : 'general'
 }
@@ -136,7 +140,7 @@ export function ChatPanel({ topic, onTopicChange, sessionId, initialAsk, onAsked
             </select>
           </label>
         ) : (
-          <span className="badge">{TOPIC_LABEL[topic]} · 선생님 설정 적용</span>
+          <span className="badge">{topicLabel(topic)} · 선생님 설정 적용</span>
         )}
       </header>
 
@@ -144,9 +148,9 @@ export function ChatPanel({ topic, onTopicChange, sessionId, initialAsk, onAsked
         {bubbles.length === 0 && (
           <div className="chat-empty">
             <Mascot mood="curious" size={120} float />
-            <p>무엇이든 물어보세요. {TOPIC_LABEL[topic]} 주제에 맞춰 답해 드려요.</p>
+            <p>무엇이든 물어보세요. {topicLabel(topic)} 주제에 맞춰 답해 드려요.</p>
             <div className="chips">
-              {EXAMPLES[topic].map((q) => (
+              {examplesOf(topic).map((q) => (
                 <button key={q} className="chip" onClick={() => void send(q)}>{q}</button>
               ))}
             </div>

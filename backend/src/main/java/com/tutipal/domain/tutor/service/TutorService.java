@@ -80,7 +80,7 @@ public class TutorService {
 
     /** 세션 챗봇 지시문: 주제 지시문 + 선생님 설정(난이도 · 정답 숨김). */
     static String sessionPrompt(ChatSettings s) {
-        String prompt = s.topic().systemPrompt()
+        String prompt = TopicPrompt.promptForSubject(s.topic())
                 + "\n선생님이 정한 수준: " + LEVELS[Math.clamp(s.difficulty(), 1, 5)] + " 설명한다.";
         if (s.hideAnswers()) {
             prompt += "\n정답이나 완성된 코드를 바로 알려주지 않는다. 힌트와 되묻는 질문으로 학생이 스스로 풀게 이끈다."

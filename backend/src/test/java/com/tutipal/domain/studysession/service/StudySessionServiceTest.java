@@ -22,7 +22,6 @@ import com.tutipal.domain.studysession.entity.SessionRole;
 import com.tutipal.domain.studysession.entity.StudySession;
 import com.tutipal.domain.studysession.repository.SessionParticipantRepository;
 import com.tutipal.domain.studysession.repository.StudySessionRepository;
-import com.tutipal.domain.tutor.TopicPrompt;
 import com.tutipal.domain.user.service.UserService;
 import com.tutipal.global.exception.ApiException;
 import com.tutipal.global.realtime.Presence;
@@ -40,7 +39,7 @@ class StudySessionServiceTest {
 
     @BeforeEach
     void setUp() {
-        session = new StudySession("자바 기초", TopicPrompt.CODING, "A7K2Q9", TEACHER);
+        session = new StudySession("자바 기초", "코딩", "A7K2Q9", TEACHER);
         ReflectionTestUtils.setField(session, "id", SID);
         when(sessions.findById(SID)).thenReturn(Optional.of(session));
         when(sessions.findByInviteCode("A7K2Q9")).thenReturn(Optional.of(session));
@@ -83,7 +82,7 @@ class StudySessionServiceTest {
 
     @Test
     void onlyTeacherChangesSettingsAndStrangerSeesNothing() {
-        var req = new UpdateSettingsRequest("math", 5, true, false);
+        var req = new UpdateSettingsRequest("수학", 5, true, false);
         assertThat(status(() -> service.updateSettings(STUDENT, SID, req))).isEqualTo(HttpStatus.FORBIDDEN);
         assertThat(status(() -> service.updateSettings(STRANGER, SID, req))).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(status(() -> service.participants(STUDENT, SID))).isEqualTo(HttpStatus.FORBIDDEN);
@@ -91,7 +90,7 @@ class StudySessionServiceTest {
 
         service.updateSettings(TEACHER, SID, req);
         var settings = service.chatSettings(STUDENT, SID);
-        assertThat(settings.topic()).isEqualTo(TopicPrompt.MATH);
+        assertThat(settings.topic()).isEqualTo("수학");
         assertThat(settings.difficulty()).isEqualTo(5);
         assertThat(settings.hideAnswers()).isTrue();
     }

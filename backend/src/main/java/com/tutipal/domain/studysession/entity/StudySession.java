@@ -4,8 +4,6 @@ import java.time.Instant;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -14,7 +12,6 @@ import jakarta.persistence.Table;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
-import com.tutipal.domain.tutor.TopicPrompt;
 import com.tutipal.global.common.BaseTimeEntity;
 
 /** 단체 학습 세션. 선생님 챗봇 설정(주제 · 난이도 · 정답 숨김)이 학생 챗봇에 그대로 적용된다. */
@@ -29,9 +26,9 @@ public class StudySession extends BaseTimeEntity {
     @Column(nullable = false, length = 50)
     private String title;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    private TopicPrompt topic;
+    /** 과목 이름 ("코딩", "한국사", 직접 쓴 이름 등) */
+    @Column(nullable = false, length = 30)
+    private String topic;
 
     @Column(nullable = false, length = 6, unique = true)
     private String inviteCode;
@@ -54,14 +51,14 @@ public class StudySession extends BaseTimeEntity {
     protected StudySession() {
     }
 
-    public StudySession(String title, TopicPrompt topic, String inviteCode, Long ownerId) {
+    public StudySession(String title, String topic, String inviteCode, Long ownerId) {
         this.title = title;
         this.topic = topic;
         this.inviteCode = inviteCode;
         this.ownerId = ownerId;
     }
 
-    public void updateSettings(TopicPrompt topic, int difficulty, boolean hideAnswers, boolean preferMaterials) {
+    public void updateSettings(String topic, int difficulty, boolean hideAnswers, boolean preferMaterials) {
         this.topic = topic;
         this.difficulty = difficulty;
         this.hideAnswers = hideAnswers;
@@ -77,7 +74,7 @@ public class StudySession extends BaseTimeEntity {
     public boolean isEnded() { return endedAt != null; }
     public Long getId() { return id; }
     public String getTitle() { return title; }
-    public TopicPrompt getTopic() { return topic; }
+    public String getTopic() { return topic; }
     public String getInviteCode() { return inviteCode; }
     public Long getOwnerId() { return ownerId; }
     public int getDifficulty() { return difficulty; }

@@ -57,7 +57,7 @@ public class StudySessionService {
     /** 세션을 연 사람이 그 세션의 TEACHER. */
     @Transactional
     public SessionResponse create(Long userId, CreateSessionRequest request) {
-        TopicPrompt topic = TopicPrompt.from(request.topic());
+        String topic = TopicPrompt.subject(request.topic());
         StudySession session = sessions.save(new StudySession(request.title().trim(), topic, newCode(), userId));
         participants.save(new SessionParticipant(session.getId(), userId, SessionRole.TEACHER));
         return SessionResponse.of(session, SessionRole.TEACHER, 1);
@@ -115,7 +115,7 @@ public class StudySessionService {
     public SessionResponse updateSettings(Long userId, Long sessionId, UpdateSettingsRequest request) {
         requireTeacher(sessionId, userId);
         StudySession session = requireActive(sessionId);
-        session.updateSettings(TopicPrompt.from(request.topic()), request.difficulty(),
+        session.updateSettings(TopicPrompt.subject(request.topic()), request.difficulty(),
                 request.hideAnswers(), request.preferMaterials());
         events.toSession(sessionId, "settings", sessionId);
         return response(session, SessionRole.TEACHER);

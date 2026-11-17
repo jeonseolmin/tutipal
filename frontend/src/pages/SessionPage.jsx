@@ -5,8 +5,8 @@ import { useSessionEvents } from '../api/realtime'
 import { sessions } from '../api/sessions'
 import Icon from '../components/Icon'
 import Mascot from '../components/Mascot'
-import { ChatPanel, TOPIC_LABEL } from './ChatPage'
-import { TOPICS } from './HomePage'
+import { ChatPanel } from './ChatPage'
+import SubjectPicker from '../components/SubjectPicker'
 import { BoardPanel, MaterialsPanel, NoticesPanel } from './BoardPanels'
 import { StudentHelp, StudentLiveTab, TeacherHelpTab, TeacherShareTab } from './LivePanels'
 import { notices } from '../api/board'
@@ -62,7 +62,7 @@ function SessionHead({ session, badge, live, actions }) {
           </span>
         </h1>
         <p className="muted">
-          {TOPIC_LABEL[session.topic]} · 참가자 {session.participantCount}명 · 코드 <b>{session.inviteCode}</b>
+          {session.topic} · 참가자 {session.participantCount}명 · 코드 <b>{session.inviteCode}</b>
         </p>
       </div>
       {actions && <div className="session-actions">{actions}</div>}
@@ -278,13 +278,9 @@ function Settings({ session, onChange }) {
 
   return (
     <form className="card session-body settings" onSubmit={onSubmit}>
-      <div className="radio-row" role="radiogroup" aria-label="학습 주제">
-        {TOPICS.map((t) => (
-          <label key={t.id} className={`radio-card${form.topic === t.id ? ' on' : ''}`}>
-            <input type="radio" name="topic" checked={form.topic === t.id} onChange={() => set({ topic: t.id })} />
-            {t.label}
-          </label>
-        ))}
+      <div className="field">
+        <strong>공부할 과목</strong>
+        <SubjectPicker value={form.topic} onChange={(topic) => set({ topic })} />
       </div>
       <label className="setting-row">
         <span className="muted">쉬움</span>
