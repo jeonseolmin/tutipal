@@ -1,0 +1,11 @@
+{
+  "//": "편집기(VS Code)용 설정: JSX 인식 · import 자동 완성. 빌드에는 쓰이지 않음 (Vite 가 직접 처리)",
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "checkJs": false
+  },
+  "include": ["src"]
+}

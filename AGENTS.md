@@ -12,8 +12,8 @@ Claude Code · Codex · Cursor 등 어떤 도구든 작업 전에 이 파일을 
 ## 구조 한눈에
 - `backend/` Spring Boot 4 · Java 21 — `domain/<기능>/{controller,service,dto,entity,repository}`, 공통은 `global/`
 - `ai/` FastAPI — Ollama 호출(채팅 · 비전 · 임베딩) · 글자 뽑기. **DB 는 Spring 만 쓴다** (ai 는 상태 없음)
-- `frontend/` React + TS + Vite — 빌드 결과를 Spring 이 제공, Electron 이 그 주소를 연다
-- `desktop/` Electron — 창 · 위젯 · 화면 캡처 · 딥링크 · 그림 오버레이 · 설치 파일
+- `frontend/` React + JavaScript(JSX) + Vite — 빌드 결과를 Spring 이 제공, Electron 이 그 주소를 연다
+- `desktop/` Electron (JavaScript, CommonJS, 빌드 없이 `src/` 그대로 실행) — 창 · 위젯 · 화면 캡처 · 딥링크 · 그림 오버레이 · 설치 파일
 - 실행: `docker compose up -d --build` (backend · ai · db · redis · livekit), Ollama 는 PC 에 따로
 
 ## 코드 규칙
@@ -26,10 +26,12 @@ Claude Code · Codex · Cursor 등 어떤 도구든 작업 전에 이 파일을 
 - 실시간 알림(STOMP)은 "무엇이 바뀌었나(type, id)" 만 보내고 화면이 REST 로 다시 읽는다 (`global/realtime/SessionEvents`, 커밋 뒤 전송). 권한 검사는 REST 한 곳에서
 - 트랜잭션 밖(가상 스레드 등)에서 DB 를 바꾸는 쿼리는 그 메서드에 `@Transactional` 이 있어야 한다
 ### frontend
-- 서버와 주고받는 코드는 `src/api/` 에만. 백엔드 DTO 를 바꾸면 `src/api/types.ts` 도 같이
+- **JavaScript 로 쓴다** (2026-11-17 팀 결정, TypeScript 아님). React 화면은 `.jsx`, 나머지 `.js`
+- 서버와 주고받는 코드는 `src/api/` 에만. 백엔드 DTO 를 바꾸면 `src/api/types.js` 의 JSDoc `@typedef` 도 같이 (실행에는 영향 없고 VS Code 자동 완성 · 설명용)
+- 타입 검사가 없으니 DTO 필드 이름을 바꿀 때는 화면에서 그 이름을 전부 검색해서 같이 고치고, 실제로 띄워 확인
 - 화면 주석에 목업 번호를 적는다 (`docs/mockups/screens/NN-*.png`)
 ### desktop
-- `contextIsolation` · `sandbox` 유지, 화면에 여는 기능은 preload 에만, 메인 프로세스는 IPC 마다 `fromOurPage` 확인
+- `contextIsolation` · `sandbox` 유지, 화면에 여는 기능은 preload(`src/preload/index.js`, 이게 `window.desktop` 기능 목록)에만, 메인 프로세스는 IPC 마다 `fromOurPage` 확인
 - 권한은 `display-capture`(우리 페이지)만 허용. 우리 서버 밖 주소는 앱 안에서 열지 않고 기본 브라우저로
 
 ## 보안 · 개인정보 (꼭)
@@ -44,7 +46,7 @@ Claude Code · Codex · Cursor 등 어떤 도구든 작업 전에 이 파일을 
 - `AiClient` 의 HTTP/1.1 고정 되돌리기 (uvicorn 이 HTTP/2 업그레이드를 거부함)
 - Redis 클라이언트를 Jedis 로 바꾸기, `synchronized` 안에서 오래 막기 (가상 스레드 고정 → `ReentrantLock`)
 - 이유 없이 새 의존성 추가. 추가하면 **정확한 버전 고정**(2주 이상 지난 릴리스) + PR 에 이유
-- 확인 없이 대량 삭제 · 강제 push · `main` 직접 push
+- 확인 없이 대량 삭제 · 강제 push · `main` 직접 push. 작업 브랜치는 `develop` 에서 따고 PR 도 `develop` 으로
 
 ## 알고 둔 단순화: `ponytail:` 주석
 코드의 `// ponytail: ...` 는 일부러 단순하게 둔 곳이다. 한계와 다음 방법이 적혀 있으니, 그 한계를 넘는 일을 하면 거기부터 고친다.
@@ -64,8 +66,8 @@ Claude Code · Codex · Cursor 등 어떤 도구든 작업 전에 이 파일을 
 ```sh
 cd backend && ./gradlew test
 cd ai && uv run --no-project --python 3.12 --with-requirements requirements.txt --with-requirements requirements-dev.txt pytest -q
-cd frontend && npm run build        # 타입 검사 포함
-cd desktop && npx tsc --noEmit
+cd frontend && npm run build        # Vite 빌드 (문법 · import 오류)
+cd desktop && npm run check        # node --check 로 문법 검사
 ```
 - 그리고 **실제로 띄워서 확인**: `docker compose up -d --build` → http://localhost → 개발용 로그인
   - 선생님 · 학생 두 명: 브라우저 탭 하나는 `http://localhost`, 하나는 `http://127.0.0.1/login?dev=2` (주소가 달라 쿠키가 따로)
