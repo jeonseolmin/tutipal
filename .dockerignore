@@ -1,0 +1,12 @@
+# backend 이미지 빌드 컨텍스트(저장소 루트)에서 뺄 것
+**/node_modules
+**/dist
+**/build
+**/.gradle
+**/.ruff_cache
+**/__pycache__
+.env
+desktop
+docs
+ai
+db

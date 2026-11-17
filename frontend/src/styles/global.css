@@ -1,0 +1,94 @@
+/* 디자인 토큰 — docs/mockups 기준 */
+:root {
+  --bg: #eef3fa;
+  --surface: #ffffff;
+  --surface-2: #f5f8fc;
+  --line: #e2e8f0;
+  --text: #1f2633;
+  --text-2: #6b7585;
+  --text-3: #a3acba;
+  --primary: #1a73f0;
+  --primary-hover: #1463d6;
+  --primary-weak: #e4eefe;
+  --primary-line: #b9d3fb;
+  --green: #22c55e;
+  --yellow: #fee500;
+  --naver: #03c75a;
+  --red: #ef4444;
+  --radius-sm: 10px;
+  --radius: 16px;
+  --radius-lg: 22px;
+  --shadow: 0 1px 2px rgba(31, 38, 51, 0.04), 0 6px 18px rgba(31, 38, 51, 0.06);
+  --shadow-float: 0 8px 28px rgba(31, 38, 51, 0.16);
+  --font: 'Pretendard Variable', Pretendard, 'Malgun Gothic', system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body, #root { height: 100%; margin: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 위젯 창(Electron 투명 창)에서는 배경을 비운다 */
+html.transparent, html.transparent body { background: transparent; }
+
+button, input, textarea, select { font: inherit; color: inherit; }
+
+/* 공통 조각 */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 18px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.15s, border-color 0.15s;
+}
+.btn:hover:not(:disabled) { background: var(--surface-2); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-primary { background: var(--primary); border-color: var(--primary); color: #fff; }
+.btn-primary:hover:not(:disabled) { background: var(--primary-hover); }
+.btn-sm { height: 34px; padding: 0 12px; font-size: 13px; }
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--primary-weak);
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); display: inline-block; }
+.dot.off { background: var(--text-3); }
+
+.muted { color: var(--text-2); }
+
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+.float { animation: float 3.2s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) { .float { animation: none; } }

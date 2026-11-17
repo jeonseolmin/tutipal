@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>로그인 보안 설계 근거 — 세션 방식과 리프레시 토큰 미사용</title>
+<style>
+  @page { size: A4; margin: 16mm 16mm 18mm; }
+  * { box-sizing: border-box; }
+  body { font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; color: #1f2633; font-size: 10.2pt; line-height: 1.62; margin: 0; }
+  h1, h2, h3 { letter-spacing: -0.3px; }
+  .cover { background: linear-gradient(135deg, #1a73f0, #3b8cff); color: #fff; border-radius: 14px; padding: 22px 26px; margin-bottom: 18px; }
+  .cover .tag { font-size: 9pt; opacity: .9; font-weight: 700; letter-spacing: .5px; }
+  .cover h1 { margin: 6px 0 6px; font-size: 21pt; line-height: 1.3; }
+  .cover p { margin: 0; opacity: .95; }
+  .meta { display: flex; gap: 18px; margin-top: 12px; font-size: 8.8pt; opacity: .9; }
+  h2 { font-size: 13.5pt; margin: 22px 0 8px; padding-left: 10px; border-left: 5px solid #1a73f0; page-break-after: avoid; }
+  h3 { font-size: 11pt; margin: 14px 0 6px; color: #1a4fa0; page-break-after: avoid; }
+  p { margin: 6px 0; }
+  .summary { border: 1.5px solid #b9d3fb; background: #f2f7ff; border-radius: 12px; padding: 12px 16px; }
+  .summary strong { color: #1a4fa0; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 8px 0; }
+  .card { border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 12px; background: #fff; page-break-inside: avoid; }
+  .card .n { display: inline-block; width: 22px; height: 22px; border-radius: 50%; background: #1a73f0; color: #fff; text-align: center; font-weight: 800; font-size: 9.5pt; line-height: 22px; margin-right: 6px; }
+  .card h4 { margin: 0 0 4px; font-size: 10.5pt; }
+  .card p { font-size: 9.2pt; margin: 0; color: #424b5a; }
+  blockquote { margin: 8px 0; padding: 8px 12px; background: #f7f9fc; border-left: 4px solid #94a3b8; border-radius: 0 8px 8px 0; font-size: 9.4pt; color: #384152; }
+  blockquote .src { display: block; margin-top: 3px; font-size: 8.4pt; color: #6b7585; }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 9.2pt; page-break-inside: auto; }
+  th { background: #eef3fa; text-align: left; padding: 7px 8px; border-bottom: 2px solid #cbd5e1; }
+  td { padding: 6px 8px; border-bottom: 1px solid #e5e9f0; vertical-align: top; }
+  tr { page-break-inside: avoid; }
+  .ok { color: #15803d; font-weight: 800; }
+  .warn { color: #b45309; font-weight: 800; }
+  .no { color: #b91c1c; font-weight: 800; }
+  code { font-family: Consolas, monospace; font-size: 8.8pt; background: #f1f5f9; padding: 1px 5px; border-radius: 4px; }
+  .diagram { border: 1px solid #e2e8f0; border-radius: 12px; padding: 10px; margin: 8px 0; page-break-inside: avoid; }
+  .callout { border-radius: 10px; padding: 10px 14px; margin: 8px 0; page-break-inside: avoid; }
+  .callout.yellow { background: #fffbeb; border: 1px solid #fde68a; }
+  .callout.green { background: #f0fdf4; border: 1px solid #bbf7d0; }
+  .interview { background: #0f172a; color: #e2e8f0; border-radius: 12px; padding: 14px 18px; font-size: 9.8pt; page-break-inside: avoid; }
+  .interview b { color: #93c5fd; }
+  .sources li { margin: 3px 0; font-size: 8.8pt; word-break: break-all; }
+  .muted { color: #6b7585; font-size: 8.8pt; }
+  .page-break { page-break-before: always; }
+</style>
+</head>
+<body>
+
+<section class="cover">
+  <div class="tag">TUTIPAL · 보안 설계 근거</div>
+  <h1>로그인 보안: 왜 세션 방식인가,<br>왜 리프레시 토큰을 쓰지 않았나</h1>
+  <p>웹(선생님) + Electron 데스크톱 앱(학생) · Spring Boot 4 · Spring Session(Redis)</p>
+  <div class="meta"><span>작성 2026-11-16</span><span>근거: IETF RFC 10017 · RFC 9700 · OWASP</span><span>실측 검증 포함</span></div>
+</section>
+
+<div class="summary">
+  <strong>한 줄 결론</strong> — 리프레시 토큰을 쓰지 않은 것은 임시방편이 아니라, IETF 표준(RFC 10017)이 브라우저 앱에서
+  <strong>가장 안전하다</strong>고 권하는 <strong>BFF 패턴</strong>을 따른 결과다. 토큰은 서버에만 두고 클라이언트에는
+  <strong>HttpOnly 세션 쿠키</strong>만 준다. 세션은 OWASP 기준으로 보호했고, 남은 보완점 2가지(시간 제한)도 명시한다.
+</div>
+
+<h2>1. 우리 구조 = 표준이 "가장 안전하다"고 한 BFF 패턴</h2>
+<p>IETF의 브라우저 앱 OAuth 표준(RFC 10017, 초안 draft-ietf-oauth-browser-based-apps의 최종판)은 로그인 구조를
+<b>안전한 순서대로</b> 나열하고, 그 첫 번째인 <b>BFF(Backend For Frontend)</b>를 업무용 앱에 강하게 권한다.</p>
+<blockquote>"토큰은 BFF에만 있으므로 브라우저에서 빼낼 토큰이 없다."<span class="src">RFC 10017 (draft-27) 6.1절 — "Since tokens are only available to the BFF, there are no tokens available to extract from the browser"</span></blockquote>
+
+<div class="diagram">
+<svg viewBox="0 0 700 170" width="100%" font-family="Malgun Gothic, sans-serif">
+  <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker></defs>
+  <rect x="10" y="30" width="170" height="90" rx="12" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+  <text x="95" y="62" text-anchor="middle" font-size="14" font-weight="700">브라우저 · Electron</text>
+  <text x="95" y="86" text-anchor="middle" font-size="11" fill="#475569">토큰 없음</text>
+  <text x="95" y="104" text-anchor="middle" font-size="11" fill="#475569">HttpOnly 쿠키만 보유</text>
+  <line x1="182" y1="75" x2="285" y2="75" stroke="#475569" stroke-width="2" marker-end="url(#a)"/>
+  <text x="234" y="66" text-anchor="middle" font-size="10.5" fill="#1a4fa0" font-weight="700">세션 쿠키</text>
+  <text x="234" y="94" text-anchor="middle" font-size="10" fill="#6b7585">+ X-XSRF-TOKEN</text>
+  <rect x="290" y="20" width="200" height="110" rx="12" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+  <text x="390" y="50" text-anchor="middle" font-size="14" font-weight="700">Spring (= BFF)</text>
+  <text x="390" y="74" text-anchor="middle" font-size="11" fill="#475569">소셜 OAuth 처리는 서버 안</text>
+  <text x="390" y="92" text-anchor="middle" font-size="11" fill="#475569">권한 판단 · CSRF 검사</text>
+  <text x="390" y="110" text-anchor="middle" font-size="11" fill="#475569">세션 즉시 무효화 가능</text>
+  <line x1="492" y1="60" x2="560" y2="45" stroke="#475569" stroke-width="2" marker-end="url(#a)"/>
+  <line x1="492" y1="95" x2="560" y2="115" stroke="#475569" stroke-width="2" marker-end="url(#a)"/>
+  <rect x="565" y="20" width="125" height="50" rx="10" fill="#fef2f2" stroke="#ef4444" stroke-width="2"/>
+  <text x="627" y="42" text-anchor="middle" font-size="12.5" font-weight="700">Redis</text>
+  <text x="627" y="59" text-anchor="middle" font-size="10" fill="#475569">세션 장부</text>
+  <rect x="565" y="92" width="125" height="50" rx="10" fill="#fff" stroke="#94a3b8" stroke-width="2"/>
+  <text x="627" y="114" text-anchor="middle" font-size="11.5" font-weight="700">카카오·네이버·구글</text>
+  <text x="627" y="131" text-anchor="middle" font-size="10" fill="#475569">OAuth (서버만 통신)</text>
+  <text x="350" y="160" text-anchor="middle" font-size="10.5" fill="#1a4fa0">화면 코드(React)는 어떤 토큰도 만지지 않는다 — 코드 검색 결과 JWT·refresh·Bearer 0건</text>
+</svg>
+</div>
+
+<h2>2. 리프레시 토큰을 쓰지 않은 근거 3가지</h2>
+<div class="grid3">
+  <div class="card"><h4><span class="n">1</span>표준의 무거운 의무</h4>
+    <p>클라이언트(브라우저·데스크톱 앱)에 리프레시 토큰을 주면 RFC 9700에 따라 <b>회전</b> 또는 <b>발신자 제한</b>이 필수. 우리는 토큰을 주지 않으므로 의무 자체가 없다.</p></div>
+  <div class="card"><h4><span class="n">2</span>브라우저 보관 위험</h4>
+    <p>OWASP는 세션 식별자를 localStorage에 두지 말라고 명시. JWT는 화면 코드가 들고 있어야 해 XSS에 노출된다. HttpOnly 쿠키는 화면 코드가 읽을 수 없다.</p></div>
+  <div class="card"><h4><span class="n">3</span>즉시 차단 필요</h4>
+    <p>세션 제외 · 계정 정지가 바로 반영돼야 한다. JWT는 만료 전 취소가 어렵고, 그 보완책이 리프레시·차단 목록. 세션은 Redis에서 지우면 즉시 끝.</p></div>
+</div>
+<blockquote>"공개 클라이언트의 리프레시 토큰은 반드시 발신자 제한을 하거나 리프레시 토큰 회전을 사용해야 한다."<span class="src">RFC 9700 (2025.1) 2.2.2절 — "Refresh tokens for public clients MUST be sender-constrained or use refresh token rotation"</span></blockquote>
+<blockquote>"세션 식별자를 localStorage에 저장하지 마라. 데이터가 항상 JavaScript로 접근 가능하다." / "쿠키는 httpOnly 플래그로 이 위험을 줄일 수 있다."<span class="src">OWASP HTML5 Security Cheat Sheet</span></blockquote>
+<blockquote>"웹 애플리케이션은 최소한 서버 쪽에서 세션을 무효화해야 한다." / "쿠키만 지우는 것으로는 훔쳐 간 세션 사본이 무효가 되지 않는다."<span class="src">OWASP Session Management Cheat Sheet</span></blockquote>
+
+<h3>JWT + 리프레시 토큰을 도입했다면 생겼을 비용</h3>
+<table>
+  <tr><th style="width:26%">항목</th><th>세션 쿠키 (채택)</th><th>JWT + 리프레시 (미채택)</th></tr>
+  <tr><td>로그아웃 · 강제 차단</td><td>즉시 (서버 세션 삭제)</td><td>Access 만료까지 유효, 막으려면 차단 목록 → 결국 서버 상태 필요</td></tr>
+  <tr><td>탈취 위험</td><td>HttpOnly → JS가 읽지 못함</td><td>화면 코드가 토큰 보유 → XSS 한 번에 유출 가능</td></tr>
+  <tr><td>구현 · 유지보수</td><td>Spring Security + Spring Session 기본 기능</td><td>발급 · 회전 · 재사용 탐지 · 동시 갱신 충돌 처리 직접 구현</td></tr>
+  <tr><td>우리 앱 특유 위험</td><td>—</td><td>메인 창 + 요약 위젯이 동시에 갱신 → 회전 충돌로 정상 사용자 로그아웃</td></tr>
+  <tr><td>추가 공수</td><td>약 2~3인일</td><td>약 4~6인일</td></tr>
+</table>
+
+<div class="callout yellow"><b>JWT를 쓰는 곳은 딱 한 곳</b> — 화면공유 서버(LiveKit) 입장권. LiveKit은 우리 Redis 세션을 볼 수 없으므로,
+이미 세션으로 로그인한 사용자에게 Spring이 <b>짧은 유효시간 · 방 · 권한이 담긴 JWT</b>를 그때그때 발급한다. 만료되면 세션으로 다시 받으므로
+여기에도 리프레시 토큰은 없다. → "JWT가 맞는 곳(외부 서버 검증)과 세션이 맞는 곳(우리 API)을 구분"</div>
+
+<h2>3. OWASP 세션 관리 기준 점검 (2026-11-16 실측)</h2>
+<table>
+  <tr><th style="width:30%">OWASP 기준</th><th style="width:12%">상태</th><th>근거 (실제 확인 결과)</th></tr>
+  <tr><td>세션 번호 64비트 이상 무작위</td><td class="ok">충족</td><td>Spring Session UUID (36자, 무작위 122비트)</td></tr>
+  <tr><td>HttpOnly (XSS 탈취 방지, 필수)</td><td class="ok">충족</td><td>응답 헤더 <code>Set-Cookie: SESSION=…; HttpOnly</code></td></tr>
+  <tr><td>SameSite (Strict 또는 Lax)</td><td class="ok">충족 (Lax)</td><td>응답 헤더 <code>SameSite=Lax</code></td></tr>
+  <tr><td>Secure (HTTPS 전용)</td><td class="warn">조건부</td><td>HTTPS 배포 시 nginx의 <code>X-Forwarded-Proto</code>로 자동 적용. 로컬 http에서는 확인 불가 → 배포 때 점검</td></tr>
+  <tr><td>로그인 시 세션 번호 재발급 (필수)</td><td class="ok">충족</td><td>소셜 로그인은 Spring Security 기본, 개발용 로그인은 <code>changeSessionId()</code></td></tr>
+  <tr><td>로그아웃 시 서버에서 무효화</td><td class="ok">충족</td><td>로그아웃 전 Redis 키 존재(1) → 후 삭제(0). 예전 쿠키로 재요청 시 <b>401</b></td></tr>
+  <tr><td>CSRF 방어 (RFC 10017: 필수)</td><td class="ok">충족</td><td>사용자 정의 헤더 <code>X-XSRF-TOKEN</code> + SameSite. 토큰 없는 POST는 <b>403</b></td></tr>
+  <tr><td>유휴 시간 제한</td><td class="warn">보완 필요</td><td>현재 8시간 → 학습 서비스 기준 1~2시간 권장</td></tr>
+  <tr><td>절대 시간 제한</td><td class="no">미구현</td><td>Spring Session 기본 기능에 없음 → 필터로 추가 필요</td></tr>
+</table>
+
+<div class="callout green"><b>SameSite를 Strict가 아닌 Lax로 둔 이유</b> — RFC 10017은 Strict를 "권장(SHOULD)"하지만,
+Strict면 카카오·네이버 로그인 후 <b>우리 사이트로 돌아오는 요청에 세션 쿠키가 붙지 않아</b> 로그인이 깨진다.
+Lax는 OWASP가 허용하는 값이며, CSRF는 사용자 정의 헤더로 별도 방어한다.</div>
+
+<h2>4. 남은 보완 사항</h2>
+<table>
+  <tr><th style="width:6%">#</th><th style="width:30%">항목</th><th>방법</th><th style="width:14%">난이도</th></tr>
+  <tr><td>1</td><td>유휴 시간 단축</td><td><code>spring.session.timeout: 2h</code> (설정 한 줄)</td><td>매우 낮음</td></tr>
+  <tr><td>2</td><td>절대 시간 제한 추가</td><td>로그인 후 12시간이 지나면 활동 중이어도 재로그인 (세션 생성 시각 검사 필터 + 테스트)</td><td>낮음</td></tr>
+  <tr><td>3</td><td>HTTPS 배포 시 Secure 확인</td><td>Cloudflare Tunnel 연결 후 응답 헤더에 <code>Secure</code> 포함 여부를 배포 체크리스트로 점검</td><td>낮음</td></tr>
+  <tr><td>4</td><td>(선택) 모든 기기 로그아웃</td><td>Spring Session의 사용자별 세션 조회로 한 번에 무효화 (OWASP: 같은 인증 세션 일괄 폐기)</td><td>중간</td></tr>
+</table>
+<p class="muted">1~3을 마치면 위 OWASP 세션 점검표의 모든 항목을 충족한다.</p>
+
+<h2>5. 발표 · 면접용 요약</h2>
+<div class="interview">
+"브라우저와 데스크톱 앱이 모두 웹 기술이라 <b>IETF RFC 10017이 가장 안전하다고 권하는 BFF 패턴</b>을 택했습니다.
+토큰은 서버에만 두고 클라이언트에는 <b>HttpOnly 세션 쿠키</b>만 줘서 <b>탈취할 토큰 자체가 없게</b> 했습니다.
+리프레시 토큰은 <b>RFC 9700</b>에 따라 클라이언트에 줄 경우 회전이나 발신자 제한이 필수인데, 우리는 토큰을 클라이언트에 주지 않아
+그 위험과 복잡도를 원천적으로 없앴습니다. 대신 세션은 <b>OWASP 기준</b>(HttpOnly, SameSite, 로그인 시 재발급, 서버 측 무효화,
+CSRF 헤더)으로 보호했고, 우리 세션을 볼 수 없는 <b>외부 미디어 서버(LiveKit)에만 짧은 JWT</b>를 발급합니다."
+</div>
+
+<h2>참고 문서</h2>
+<ul class="sources">
+  <li>IETF RFC 10017 / draft-ietf-oauth-browser-based-apps — OAuth 2.0 for Browser-Based Applications (6.1절 BFF): https://datatracker.ietf.org/doc/html/draft-ietf-oauth-browser-based-apps</li>
+  <li>IETF RFC 9700 — OAuth 2.0 Security Best Current Practice (2.2.2절): https://www.rfc-editor.org/rfc/rfc9700.html</li>
+  <li>OWASP Session Management Cheat Sheet: https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html</li>
+  <li>OWASP HTML5 Security Cheat Sheet: https://cheatsheetseries.owasp.org/cheatsheets/HTML5_Security_Cheat_Sheet.html</li>
+</ul>
+<p class="muted">실측 환경: 로컬 Docker (nginx · Spring Boot 4.1.2 · Spring Security 7.1.2 · Redis 7), 개발용 로그인으로 세션 생성 후 curl로 응답 헤더 · Redis 키 · 상태 코드 확인.</p>
+
+</body>
+</html>

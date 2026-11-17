@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="940" viewBox="0 0 1400 940" font-family="'Malgun Gothic','Segoe UI',sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+    <style>
+      .t{font-size:20px;font-weight:700;fill:#0f172a}
+      .s{font-size:14px;fill:#334155}
+      .m{font-size:12.5px;fill:#64748b}
+      .l{stroke:#475569;stroke-width:2;fill:none;marker-end:url(#a)}
+      .lb{font-size:12.5px;fill:#475569;font-weight:600}
+    </style>
+  </defs>
+  <rect width="1400" height="940" fill="#f8fafc"/>
+  <text x="40" y="52" font-size="30" font-weight="800" fill="#0f172a">TUTIPAL — 구조 한눈에 보기</text>
+  <text x="40" y="82" class="s">선생님 · 학생 (모두 Electron) · AI 조교 | 팀장 PC 1대 + docker compose | 로컬 LLM</text>
+
+  <!-- EC2 boundary -->
+  <rect x="250" y="110" width="1110" height="560" rx="18" fill="none" stroke="#94a3b8" stroke-width="2" stroke-dasharray="8 6"/>
+  <text x="270" y="138" class="m" font-weight="700">팀장 PC · docker compose (컨테이너 4개)</text>
+
+  <!-- users -->
+  <rect x="40" y="250" width="170" height="200" rx="14" fill="#fff" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="125" y="290" text-anchor="middle" font-size="34">👩‍🏫 🧑‍🎓</text>
+  <text x="125" y="330" text-anchor="middle" class="t">사용자</text>
+  <text x="125" y="356" text-anchor="middle" class="s">강사: 웹 브라우저</text>
+  <text x="125" y="380" text-anchor="middle" class="s">학생: Electron 앱</text>
+  <text x="125" y="420" text-anchor="middle" class="m">소셜 로그인</text>
+  <text x="125" y="438" text-anchor="middle" class="m">네이버 · 카카오 · 구글</text>
+
+  <!-- nginx -->
+  <rect x="290" y="250" width="180" height="200" rx="14" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+  <text x="380" y="290" text-anchor="middle" class="t">접속 경로</text>
+  <text x="380" y="318" text-anchor="middle" class="s">nginx 없음 · Spring 직접</text>
+  <text x="380" y="350" text-anchor="middle" class="m">테스트: Tailscale</text>
+  <text x="380" y="370" text-anchor="middle" class="m">공개: Cloudflare Tunnel</text>
+  <text x="380" y="390" text-anchor="middle" class="m">(HTTPS 담당)</text>
+  
+  <path class="l" d="M210,350 L286,350"/>
+  <text x="248" y="340" text-anchor="middle" class="lb">443</text>
+
+  <!-- spring -->
+  <rect x="520" y="170" width="330" height="360" rx="14" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+  <text x="685" y="208" text-anchor="middle" class="t">Spring Boot (Java 21)</text>
+  <text x="685" y="232" text-anchor="middle" class="s">메인 서버 · 업무 로직</text>
+  <g class="s">
+    <rect x="545" y="252" width="280" height="40" rx="8" fill="#fff" stroke="#bfdbfe"/><text x="560" y="278">🔐 Security + OAuth2 소셜 로그인</text>
+    <rect x="545" y="300" width="280" height="40" rx="8" fill="#fff" stroke="#bfdbfe"/><text x="560" y="326">🗂 JPA · 강의 / 자료 / Q&amp;A / 공지</text>
+    <rect x="545" y="348" width="280" height="40" rx="8" fill="#fff" stroke="#bfdbfe"/><text x="560" y="374">⚡ WebSocket (STOMP) 실시간 알림</text>
+    <rect x="545" y="396" width="280" height="40" rx="8" fill="#fff" stroke="#bfdbfe"/><text x="560" y="422">💬 AI 답변 스트리밍 (SSE)</text>
+  </g>
+  <rect x="545" y="452" width="280" height="58" rx="8" fill="#dbeafe" stroke="#3b82f6"/>
+  <text x="685" y="476" text-anchor="middle" font-size="14" font-weight="700" fill="#1e3a8a">🧵 가상 스레드 (멀티스레드)</text>
+  <text x="685" y="497" text-anchor="middle" class="m">요청 · @Async · AI 대기를 가볍게 병렬 처리</text>
+  <path class="l" d="M470,350 L516,350"/>
+
+  <!-- redis -->
+  <rect x="920" y="160" width="190" height="150" rx="14" fill="#fef2f2" stroke="#ef4444" stroke-width="2"/>
+  <text x="1015" y="198" text-anchor="middle" class="t">Redis</text>
+  <text x="1015" y="226" text-anchor="middle" class="s">로그인 세션 저장</text>
+  <text x="1015" y="250" text-anchor="middle" class="s">WebSocket pub/sub</text>
+  <text x="1015" y="280" text-anchor="middle" class="m">Lettuce 클라이언트</text>
+  <path class="l" d="M850,240 L916,240"/>
+
+  <!-- postgres -->
+  <rect x="920" y="345" width="190" height="165" rx="14" fill="#f5f3ff" stroke="#8b5cf6" stroke-width="2"/>
+  <text x="1015" y="383" text-anchor="middle" class="t">PostgreSQL</text>
+  <text x="1015" y="410" text-anchor="middle" class="s">업무 데이터</text>
+  <text x="1015" y="436" text-anchor="middle" class="s">+ pgvector (벡터 DB)</text>
+  <text x="1015" y="466" text-anchor="middle" class="m">DB 하나로 업무 + 임베딩</text>
+  <text x="1015" y="486" text-anchor="middle" class="m">(Docker 볼륨)</text>
+  <path class="l" d="M850,410 L916,410"/>
+  <text x="883" y="400" text-anchor="middle" class="lb">JPA</text>
+
+  <!-- fastapi -->
+  <rect x="520" y="560" width="330" height="90" rx="14" fill="#fffbeb" stroke="#f59e0b" stroke-width="2"/>
+  <text x="685" y="595" text-anchor="middle" class="t">FastAPI (Python) · AI 서버</text>
+  <text x="685" y="622" text-anchor="middle" class="m">자료 임베딩 · RAG 검색 · LLM 호출 (외부 비공개)</text>
+  <path class="l" d="M685,530 L685,556"/>
+  <text x="740" y="548" class="lb">내부 키</text>
+  <path class="l" d="M850,600 L1010,600 L1010,514"/>
+  <text x="900" y="590" class="lb">벡터 검색</text>
+
+  <!-- LLM -->
+  <rect x="1160" y="160" width="180" height="150" rx="14" fill="#fff" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="1250" y="198" text-anchor="middle" class="t">외부 AI API</text>
+  <text x="1250" y="226" text-anchor="middle" class="s">Claude / OpenAI</text>
+  <text x="1250" y="256" text-anchor="middle" class="m">빠르고 품질 좋음</text>
+  <text x="1250" y="276" text-anchor="middle" class="m">호출량만큼 과금</text>
+  <rect x="1160" y="345" width="180" height="150" rx="14" fill="#fff" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="1250" y="383" text-anchor="middle" class="t">로컬 LLM</text>
+  <text x="1250" y="411" text-anchor="middle" class="s">Ollama</text>
+  <text x="1250" y="441" text-anchor="middle" class="m">데이터 밖으로 안 나감</text>
+  <text x="1250" y="461" text-anchor="middle" class="m">GPU 필요</text>
+  <path class="l" d="M850,630 L1300,630 L1300,499"/>
+  <path class="l" d="M1300,630 L1340,630 L1340,314"/>
+  <text x="880" y="652" class="lb">LLM_PROVIDER = api | ollama (실패 시 서로 폴백)</text>
+
+  <!-- schedule -->
+  <text x="40" y="720" font-size="22" font-weight="800" fill="#0f172a">MVP 일정 (3명 · 약 7~8주 · ≈ 85 인일, Electron 포함)</text>
+  <g font-size="13" fill="#fff" font-weight="700">
+    <rect x="40" y="740" width="160" height="40" rx="8" fill="#64748b"/><text x="120" y="765" text-anchor="middle">1주 · 설계 · ERD</text>
+    <rect x="205" y="740" width="320" height="40" rx="8" fill="#3b82f6"/><text x="365" y="765" text-anchor="middle">2–3주 · 소셜 로그인 · 세션/토큰 · 강의 · 임베딩</text>
+    <rect x="530" y="740" width="320" height="40" rx="8" fill="#8b5cf6"/><text x="690" y="765" text-anchor="middle">4–5주 · RAG 채팅 · Q&amp;A · WebSocket 알림</text>
+    <rect x="855" y="740" width="250" height="40" rx="8" fill="#10b981"/><text x="980" y="765" text-anchor="middle">6–7주 · Electron 포장 · 배포</text>
+    <rect x="1110" y="740" width="250" height="40" rx="8" fill="#cbd5e1"/><text x="1235" y="765" text-anchor="middle" fill="#334155">(선택) 대시보드 · 과제 +16일</text>
+  </g>
+  <g class="s">
+    <circle cx="52" cy="822" r="7" fill="#3b82f6"/><text x="66" y="827">백엔드 (Java/Spring) — 인증 · 업무 · WebSocket · 배포</text>
+    <circle cx="52" cy="852" r="7" fill="#f59e0b"/><text x="66" y="857">AI (Python/FastAPI) — 임베딩 · RAG · 외부 API / Ollama</text>
+    <circle cx="52" cy="882" r="7" fill="#10b981"/><text x="66" y="887">프론트 (React + TypeScript) — 웹 화면 + Electron 데스크톱 앱 (화면 공유)</text>
+  </g>
+  <g class="m">
+    <text x="760" y="827">✔ 가상 스레드 + Redis(Lettuce) 같이 사용 가능</text>
+    <text x="760" y="852">⚠ Java 21: synchronized 안 장시간 블로킹 피하기 → ReentrantLock</text>
+    <text x="760" y="877">✖ 50명 규모라 Kafka · K8s · 별도 벡터 DB는 안 씀</text>
+  </g>
+</svg>

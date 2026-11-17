@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1000" viewBox="0 0 1400 1000" font-family="'Malgun Gothic','Segoe UI',sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+    <marker id="r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/></marker>
+    <style>
+      .h{font-size:20px;font-weight:800;fill:#0f172a}
+      .s{font-size:13.5px;fill:#334155}
+      .m{font-size:12.5px;fill:#64748b}
+      .k{font-family:Consolas,monospace;font-size:13px;fill:#0f172a}
+      .lf{stroke:#94a3b8;stroke-width:1.5;stroke-dasharray:5 5}
+      .ar{stroke:#475569;stroke-width:2;fill:none;marker-end:url(#a)}
+      .rd{stroke:#dc2626;stroke-width:2;fill:none;marker-end:url(#r)}
+      .st{font-size:13px;fill:#0f172a;font-weight:600}
+      .n{font-size:12px;font-weight:800;fill:#fff}
+    </style>
+  </defs>
+  <rect width="1400" height="1000" fill="#f8fafc"/>
+  <text x="40" y="52" font-size="30" font-weight="800" fill="#0f172a">로그인 구조 — 웹은 세션, 앱은 토큰</text>
+  <text x="40" y="82" class="s">강사(웹)는 지금 쿠키 세션 그대로 · 학생(Electron 데스크톱 앱)은 JWT 토큰 추가 · 같은 Spring 서버, 같은 Redis</text>
+
+  <!-- comparison -->
+  <rect x="40" y="105" width="560" height="330" rx="14" fill="#fff" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="62" y="140" class="h">① 두 방식 비교</text>
+  <rect x="62" y="156" width="516" height="34" rx="6" fill="#f1f5f9"/>
+  <g font-size="13.5" font-weight="800" fill="#0f172a">
+    <text x="76" y="178"></text>
+    <text x="230" y="178" fill="#059669">웹 · 강사 (React)</text>
+    <text x="410" y="178" fill="#2563eb">앱 · 학생 (Electron)</text>
+  </g>
+  <g class="s">
+    <text x="76" y="218" font-weight="700">로그인 증명</text><text x="230" y="218">세션 쿠키</text><text x="410" y="218">Access Token (JWT 30분)</text>
+    <text x="76" y="252" font-weight="700">로그인 유지</text><text x="230" y="252">세션 8시간</text><text x="410" y="252">Refresh Token 14일</text>
+    <text x="76" y="286" font-weight="700">저장 위치</text><text x="230" y="286">브라우저 (httpOnly)</text><text x="410" y="286">safeStorage (OS 암호화)</text>
+    <text x="76" y="320" font-weight="700">API 요청</text><text x="230" y="320">쿠키 자동 첨부</text><text x="410" y="320">Bearer 헤더</text>
+    <text x="76" y="354" font-weight="700">WebSocket</text><text x="230" y="354">핸드셰이크 쿠키</text><text x="410" y="354">STOMP CONNECT 헤더</text>
+    <text x="76" y="388" font-weight="700">위조 방어</text><text x="230" y="388">CSRF 토큰</text><text x="410" y="388">필요 없음 (헤더 방식)</text>
+  </g>
+  <g stroke="#e2e8f0"><line x1="62" y1="232" x2="578" y2="232"/><line x1="62" y1="266" x2="578" y2="266"/><line x1="62" y1="300" x2="578" y2="300"/><line x1="62" y1="334" x2="578" y2="334"/><line x1="62" y1="368" x2="578" y2="368"/></g>
+  <text x="62" y="420" class="m">웹을 토큰으로 통일하지 않는 이유: 브라우저에선 토큰 보관(localStorage)이 XSS에 약함</text>
+
+  <!-- spring + redis -->
+  <rect x="630" y="105" width="730" height="330" rx="14" fill="#fff" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="652" y="140" class="h">② 서버는 하나, 요청 보고 자동으로 구분</text>
+  <rect x="652" y="162" width="150" height="56" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+  <text x="727" y="187" text-anchor="middle" class="st">웹 요청</text><text x="727" y="207" text-anchor="middle" class="m">Cookie: SESSION</text>
+  <rect x="652" y="236" width="150" height="56" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+  <text x="727" y="261" text-anchor="middle" class="st">앱 요청</text><text x="727" y="281" text-anchor="middle" class="m">Bearer eyJ…</text>
+  <rect x="850" y="162" width="250" height="130" rx="12" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+  <text x="975" y="190" text-anchor="middle" class="st">Spring Security (필터 1개)</text>
+  <text x="975" y="216" text-anchor="middle" class="m">Bearer 있음 → JWT 검증</text>
+  <text x="975" y="236" text-anchor="middle" class="m">없음 → Redis 세션 확인</text>
+  <text x="975" y="262" text-anchor="middle" class="m">둘 다 통과 → 같은 Controller</text>
+  <text x="975" y="280" text-anchor="middle" class="m">(principal = users.id)</text>
+  <path class="ar" d="M802,190 L846,200"/><path class="ar" d="M802,264 L846,254"/>
+  <rect x="1140" y="162" width="200" height="130" rx="12" fill="#fef2f2" stroke="#ef4444" stroke-width="2"/>
+  <text x="1240" y="190" text-anchor="middle" class="st">Redis</text>
+  <text x="1154" y="218" class="k" font-size="12">spring:session:*</text><text x="1326" y="218" text-anchor="end" class="m">웹 세션</text>
+  <text x="1154" y="246" class="k" font-size="12">login-code:{c}</text><text x="1326" y="246" text-anchor="end" class="m">60초</text>
+  <text x="1154" y="274" class="k" font-size="12">refresh:{id}</text><text x="1326" y="274" text-anchor="end" class="m">14일</text>
+  <path class="ar" d="M1100,227 L1136,227"/>
+  <text x="652" y="330" class="s" font-weight="700">새로 추가되는 백엔드 코드 (domain/auth/)</text>
+  <g class="s">
+    <text x="652" y="358">• AuthController — /api/auth/token · /refresh · /logout</text>
+    <text x="652" y="382">• TokenService — JWT 발급 · Redis 저장/삭제 · 회전</text>
+    <text x="652" y="406">• 로그인 성공 처리 분기 (?app=1 → 앱, 아니면 웹 /) · STOMP 토큰 검사</text>
+  </g>
+  <text x="1340" y="406" text-anchor="end" font-size="15" font-weight="800" fill="#2563eb">+4~5 인일</text>
+
+  <!-- sequence -->
+  <rect x="40" y="460" width="1320" height="510" rx="14" fill="#fff" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="62" y="495" class="h">③ 앱 소셜 로그인 흐름 (지금 Spring 소셜 로그인 설정을 그대로 재사용)</text>
+
+  <g>
+    <rect x="90" y="512" width="150" height="40" rx="8" fill="#2563eb"/><text x="165" y="538" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">💻 Electron 앱</text>
+    <rect x="350" y="512" width="150" height="40" rx="8" fill="#64748b"/><text x="425" y="538" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">🌐 시스템 브라우저</text>
+    <rect x="610" y="512" width="150" height="40" rx="8" fill="#191919"/><text x="685" y="538" text-anchor="middle" font-size="14" font-weight="800" fill="#FEE500">카카오</text>
+    <rect x="870" y="512" width="150" height="40" rx="8" fill="#3b82f6"/><text x="945" y="538" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">Spring</text>
+    <rect x="1130" y="512" width="150" height="40" rx="8" fill="#ef4444"/><text x="1205" y="538" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">Redis</text>
+  </g>
+  <line class="lf" x1="165" y1="552" x2="165" y2="900"/><line class="lf" x1="425" y1="552" x2="425" y2="900"/><line class="lf" x1="685" y1="552" x2="685" y2="900"/><line class="lf" x1="945" y1="552" x2="945" y2="900"/><line class="lf" x1="1205" y1="552" x2="1205" y2="900"/>
+
+  <!-- steps -->
+  <g>
+    <circle cx="110" cy="586" r="11" fill="#2563eb"/><text x="110" y="590" text-anchor="middle" class="n">1</text>
+    <path class="ar" d="M165,590 L421,590"/><text x="180" y="580" class="st">"카카오로 로그인" → 브라우저 열기</text>
+    <path class="ar" d="M425,612 L941,612"/><text x="440" y="606" class="m">/oauth2/authorization/kakao?app=1</text>
+
+    <circle cx="110" cy="648" r="11" fill="#2563eb"/><text x="110" y="652" text-anchor="middle" class="n">2</text>
+    <path class="ar" d="M945,648 L689,648"/><text x="700" y="640" class="st">카카오 로그인 화면</text>
+    <path class="ar" d="M685,672 L941,672"/><text x="700" y="666" class="m">로그인 OK → 콜백</text>
+    <text x="960" y="690" class="m">users 테이블 저장 (지금 코드)</text>
+
+    <circle cx="110" cy="716" r="11" fill="#2563eb"/><text x="110" y="720" text-anchor="middle" class="n">3</text>
+    <path class="ar" d="M945,716 L1201,716"/><text x="960" y="708" class="st">1회용 코드 저장 (60초)</text>
+    <path class="ar" d="M945,744 L169,744"/><text x="440" y="736" class="st">tutipal://login?code=abc123  (토큰 아님!)</text>
+
+    <circle cx="110" cy="782" r="11" fill="#2563eb"/><text x="110" y="786" text-anchor="middle" class="n">4</text>
+    <path class="ar" d="M165,782 L941,782"/><text x="180" y="774" class="st">POST /api/auth/token {code}</text>
+    <path class="ar" d="M945,800 L1201,800"/><text x="960" y="794" class="m">코드 꺼내고 즉시 삭제 · refresh 저장</text>
+    <path class="ar" d="M941,822 L169,822"/><text x="180" y="816" class="st">{ accessToken, refreshToken } → safeStorage 로 암호화 저장</text>
+
+    <circle cx="110" cy="858" r="11" fill="#2563eb"/><text x="110" y="862" text-anchor="middle" class="n">5</text>
+    <path class="ar" d="M165,858 L941,858"/><text x="180" y="850" class="st">이후 모든 API: Authorization: Bearer &lt;access&gt;</text>
+
+    <circle cx="110" cy="890" r="11" fill="#2563eb"/><text x="110" y="894" text-anchor="middle" class="n">6</text>
+    <path class="rd" d="M165,890 L941,890"/><text x="180" y="884" class="st" fill="#b91c1c">30분 지나면 POST /api/auth/refresh → 새 access + 새 refresh (옛 것은 삭제)</text>
+  </g>
+
+  <rect x="62" y="912" width="1276" height="46" rx="8" fill="#fffbeb" stroke="#fde68a"/>
+  <text x="80" y="932" class="s"><tspan font-weight="800">왜 1회용 코드?</tspan> 앱 주소(딥링크, setAsDefaultProtocolClient)는 다른 앱이 가로챌 수 있음 → 60초·한 번만 쓰는 코드만 보내고, 토큰은 HTTPS 응답으로만.</text>
+  <text x="80" y="951" class="s"><tspan font-weight="800">왜 브라우저로?</tspan> 데스크톱 앱 안에 로그인 창을 넣지 않는 이유: 구글은 앱 내장 웹뷰 로그인을 막음 → 시스템 브라우저 + 딥링크가 표준.</text>
+</svg>

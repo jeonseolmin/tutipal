@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1000" viewBox="0 0 1400 1000" font-family="'Malgun Gothic','Segoe UI',sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+    <style>
+      .h{font-size:20px;font-weight:800;fill:#0f172a}
+      .s{font-size:13.5px;fill:#334155}
+      .m{font-size:12.5px;fill:#64748b}
+      .b{font-weight:800}
+      .ar{stroke:#475569;stroke-width:2;fill:none;marker-end:url(#a)}
+    </style>
+  </defs>
+  <rect width="1400" height="1000" fill="#f8fafc"/>
+  <text x="40" y="52" font-size="30" font-weight="800" fill="#0f172a">학생용 데스크톱 앱 — Electron + TypeScript 로 결정</text>
+  <text x="40" y="82" class="s">포트폴리오 기준: 채용·실무에서 쓰이는가 · 우리 팀(Java/Spring + React)과 맞는가 · Windows PC 에서 만들 수 있는가</text>
+
+  <!-- candidates table -->
+  <rect x="40" y="105" width="1320" height="445" rx="14" fill="#fff" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="62" y="140" class="h">① 후보 5개 비교</text>
+  <rect x="62" y="154" width="1276" height="36" rx="6" fill="#f1f5f9"/>
+  <g font-size="13.5" font-weight="800" fill="#0f172a">
+    <text x="76" y="177">프레임워크</text><text x="300" y="177">언어</text><text x="470" y="177">React 웹 코드 재사용</text>
+    <text x="680" y="177">실무 · 채용</text><text x="920" y="177">앱 크기</text><text x="1040" y="177">한 줄 평</text>
+  </g>
+
+  <rect x="62" y="196" width="1276" height="62" rx="8" fill="#fff" stroke="#e2e8f0"/>
+  <text x="76" y="222" font-size="16" class="b">Tauri 2 + React</text><text x="76" y="244" class="m">비교 후 보류</text>
+  <text x="300" y="232" class="s">TS + Rust(조금)</text>
+  <text x="470" y="232" class="s" font-weight="700" fill="#059669">◎ 거의 그대로</text>
+  <text x="680" y="222" class="s">가장 빠르게 뜨는 중</text><text x="680" y="242" class="m">새 프로젝트에서 많이 선택</text>
+  <text x="920" y="232" class="s" font-weight="700" fill="#059669">수 MB</text>
+  <text x="1040" y="222" class="s">웹 코드 재사용 + 최신 트렌드</text><text x="1040" y="242" class="m">가볍고 보안 기본값이 엄격함</text>
+
+  <rect x="62" y="266" width="1276" height="62" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+  <text x="76" y="292" font-size="16" class="b" fill="#065f46">Electron + React</text><text x="76" y="314" class="m" fill="#059669">★ 선택</text>
+  <text x="300" y="302" class="s">TypeScript</text>
+  <text x="470" y="302" class="s" font-weight="700" fill="#059669">◎ 거의 그대로</text>
+  <text x="680" y="292" class="s">사용·채용 1위</text><text x="680" y="312" class="m">VS Code · Slack · Discord · Notion</text>
+  <text x="920" y="302" class="s">~85 MB 이상</text>
+  <text x="1040" y="292" class="s">자료·사례 최다, 무겁다</text><text x="1040" y="312" class="m">ChatGPT · Claude 데스크톱도 Electron</text>
+
+  <rect x="62" y="336" width="1276" height="62" rx="8" fill="#fff" stroke="#e2e8f0"/>
+  <text x="76" y="362" font-size="16" class="b">Compose Multiplatform</text><text x="76" y="384" class="m">Kotlin 데스크톱</text>
+  <text x="300" y="372" class="s">Kotlin</text>
+  <text x="470" y="372" class="s" fill="#b91c1c">✕ 화면 새로 작성</text>
+  <text x="680" y="362" class="s">성장 중 (주로 Android 쪽)</text><text x="680" y="382" class="m">데스크톱 사례는 적음</text>
+  <text x="920" y="372" class="s">JVM 포함 큼</text>
+  <text x="1040" y="362" class="s">Java 팀과 언어는 잘 맞음</text><text x="1040" y="382" class="m">웹과 화면 코드 공유 불가</text>
+
+  <rect x="62" y="406" width="1276" height="62" rx="8" fill="#fff" stroke="#e2e8f0"/>
+  <text x="76" y="432" font-size="16" class="b">JavaFX</text><text x="76" y="454" class="m">Java 데스크톱</text>
+  <text x="300" y="442" class="s">Java</text>
+  <text x="470" y="442" class="s" fill="#b91c1c">✕ 화면 새로 작성</text>
+  <text x="680" y="442" class="s">유지보수 위주, 신규 채용 적음</text>
+  <text x="920" y="442" class="s">JVM 포함 큼</text>
+  <text x="1040" y="432" class="s">익숙하지만 "핫"하지 않음</text><text x="1040" y="452" class="m">포트폴리오 차별점 약함</text>
+
+  <rect x="62" y="476" width="1276" height="62" rx="8" fill="#fff" stroke="#e2e8f0"/>
+  <text x="76" y="502" font-size="16" class="b">Flutter Desktop</text><text x="76" y="524" class="m">모바일 중심</text>
+  <text x="300" y="512" class="s">Dart</text>
+  <text x="470" y="512" class="s" fill="#b91c1c">✕ 화면 새로 작성</text>
+  <text x="680" y="512" class="s">채용은 모바일 위주</text>
+  <text x="920" y="512" class="s">중간</text>
+  <text x="1040" y="502" class="s">데스크톱만 쓰기엔 애매</text><text x="1040" y="522" class="m">모바일까지 갈 때 의미</text>
+
+  <!-- shared code diagram -->
+  <rect x="40" y="570" width="660" height="400" rx="14" fill="#fff" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="62" y="605" class="h">② 구조: React(TS) 코드 하나로 웹 + 데스크톱</text>
+  <rect x="200" y="625" width="360" height="74" rx="12" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+  <text x="380" y="655" text-anchor="middle" font-size="16" class="b" fill="#1e3a8a">frontend/ (React + TS 화면 공통)</text>
+  <text x="380" y="680" text-anchor="middle" class="m">로그인 · 강의 · AI 채팅 · Q&amp;A · 알림</text>
+  <path class="ar" d="M300,699 L210,750"/><path class="ar" d="M460,699 L550,750"/>
+  <rect x="70" y="754" width="270" height="96" rx="12" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+  <text x="205" y="784" text-anchor="middle" font-size="15" class="b" fill="#065f46">🌐 웹 · 강사</text>
+  <text x="205" y="808" text-anchor="middle" class="m">nginx 가 서빙 (지금 구조)</text>
+  <text x="205" y="828" text-anchor="middle" class="m">로그인 = 세션 쿠키</text>
+  <rect x="420" y="754" width="270" height="96" rx="12" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/>
+  <text x="555" y="784" text-anchor="middle" font-size="15" class="b" fill="#92400e">💻 데스크톱 · 학생</text>
+  <text x="555" y="808" text-anchor="middle" class="m">Electron 이 같은 화면을 포장 (.exe)</text>
+  <text x="555" y="828" text-anchor="middle" class="m">로그인 = 토큰 (JWT + Redis)</text>
+  <text x="62" y="884" class="s"><tspan class="b">포트폴리오 한 줄:</tspan> "React·TypeScript 코드 하나로 웹과 데스크톱을 동시에 배포,</text>
+  <text x="62" y="906" class="s">데스크톱은 Electron 으로 알림 · 트레이 · 자동 업데이트"</text>
+  <text x="62" y="944" class="m">전부 TypeScript · 딥링크 · safeStorage · Notification · Tray 는 Electron 내장 API</text>
+
+  <!-- right column -->
+  <rect x="720" y="570" width="640" height="190" rx="14" fill="#fffbeb" stroke="#fde68a" stroke-width="2"/>
+  <text x="742" y="605" class="h">③ 데스크톱이라 좋은 점</text>
+  <g class="s">
+    <text x="742" y="638">• <tspan class="b">Mac 없이 Windows 에서 바로 빌드</tspan> · .exe / 설치 파일</text>
+    <text x="742" y="664">• macOS 버전은 GitHub Actions 의 Mac 서버로 자동 빌드</text>
+    <text x="742" y="690">• 스토어 심사 없음 → 홈페이지 다운로드 + 자동 업데이트</text>
+    <text x="742" y="716">• 로그인은 앞서 그린 토큰 방식 그대로 (브라우저 + 딥링크)</text>
+    <text x="742" y="742" class="m">   토큰 보관 = Electron safeStorage (Windows 계정으로 암호화)</text>
+  </g>
+
+  <rect x="720" y="780" width="640" height="190" rx="14" fill="#eff6ff" stroke="#bfdbfe" stroke-width="2"/>
+  <text x="742" y="815" class="h">④ 일정 · 선택 기준</text>
+  <g class="s">
+    <text x="742" y="848">• Electron 포장 + 토큰 로그인 + 알림: <tspan class="b">+8~12 인일</tspan> (화면은 웹과 공유)</text>
+    <text x="742" y="874">• MVP ≈ 85 인일 → 3명 약 7~8주 (앱 화면을 따로 만들 때보다 짧음)</text>
+    <text x="742" y="908" class="b">Electron 을 고른 이유</text>
+    <text x="742" y="934">팀이 JS/TS 에 익숙 · 실무 사용·채용 1위 · 자료 최다 · 일정 안정</text>
+    <text x="742" y="956" class="m">근거 자료: tauri-vs-electron.png</text>
+  </g>
+</svg>

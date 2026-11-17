@@ -1,0 +1,60 @@
+{
+  "name": "tutipal-desktop",
+  "private": true,
+  "version": "0.0.1",
+  "description": "TUTIPAL — AI 학습 도우미 데스크톱 앱 (Electron)",
+  "main": "out/main/index.js",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "dev": "tsc && electron .",
+    "dist": "tsc && electron-builder --win nsis"
+  },
+  "devDependencies": {
+    "electron": "45.3.3",
+    "electron-builder": "26.18.0",
+    "typescript": "5.8.3"
+  },
+  "author": "TUTIPAL 팀",
+  "tutipal": {
+    "serverUrl": "http://localhost"
+  },
+  "build": {
+    "appId": "com.tutipal.app",
+    "productName": "TUTIPAL",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "out/**",
+      "assets/**",
+      "package.json"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "shortcutName": "TUTIPAL"
+    },
+    "protocols": [
+      {
+        "name": "TUTIPAL",
+        "schemes": [
+          "tutipal"
+        ]
+      }
+    ],
+    "electronFuses": {
+      "runAsNode": false,
+      "enableCookieEncryption": true,
+      "enableNodeOptionsEnvironmentVariable": false,
+      "enableNodeCliInspectArguments": false,
+      "enableEmbeddedAsarIntegrityValidation": true,
+      "onlyLoadAppFromAsar": true
+    }
+  }
+}

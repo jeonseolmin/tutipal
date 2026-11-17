@@ -1,0 +1,15 @@
+.env
+backend/build/
+backend/.gradle/
+__pycache__/
+*.pyc
+.venv/
+.idea/
+*.iml
+.vscode/
+frontend/node_modules/
+frontend/dist/
+.ruff_cache/
+desktop/node_modules/
+desktop/out/
+desktop/release/

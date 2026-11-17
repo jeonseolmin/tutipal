@@ -1,0 +1,10 @@
+# LiveKit 서버 설정 (docker-compose 의 livekit). 키는 환경변수 LIVEKIT_KEYS 로 (.env).
+# 화면공유 영상은 UDP 7882 하나로 받는다 (여러 포트 범위 대신). UDP 가 막힌 곳은 TCP 7881 로.
+# Cloudflare Tunnel 은 영상(UDP)을 못 지나가므로 공개 시연 때는 공유기에서 7881/tcp · 7882/udp 를 열거나 TURN 필요.
+port: 7880
+rtc:
+  tcp_port: 7881
+  udp_port: 7882
+  use_external_ip: false   # node_ip 는 compose 의 --node-ip (.env LIVEKIT_NODE_IP) 로
+logging:
+  level: info

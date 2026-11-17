@@ -1,0 +1,164 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="940" viewBox="0 0 1400 940" font-family="'Malgun Gothic','Segoe UI',sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+    <style>
+      .h{font-size:20px;font-weight:800;fill:#0f172a}
+      .tr{font-family:Consolas,'D2Coding',monospace;font-size:14.5px;fill:#0f172a}
+      .c{font-family:'Malgun Gothic',sans-serif;font-size:12.5px;fill:#64748b}
+      .bt{font-size:17px;font-weight:800}
+      .bs{font-size:12.5px;fill:#334155}
+      .l{stroke:#475569;stroke-width:2;fill:none;marker-end:url(#a)}
+    </style>
+  </defs>
+  <rect width="1400" height="940" fill="#f8fafc"/>
+  <text x="40" y="52" font-size="30" font-weight="800" fill="#0f172a">프로젝트 · MVC 디렉토리 구조</text>
+  <text x="40" y="82" font-size="14" fill="#334155">도메인별 패키지 안에 MVC 계층 | View = React, Spring = REST Controller | user 도메인이 완성된 예시</text>
+
+  <!-- 1. project tree -->
+  <rect x="40" y="110" width="390" height="500" rx="14" fill="#fff" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="62" y="146" class="h">① 프로젝트 전체</text>
+  <g class="tr">
+    <text x="62" y="184">TUTIPAL/</text>
+    <text x="80" y="214">├─ docker-compose.yml</text>
+    <text x="80" y="242">├─ .env.example</text>
+    <text x="80" y="270">├─ db/init.sql</text>
+    <text x="80" y="300" fill="#10b981" font-weight="700">├─ frontend/</text>
+    <text x="80" y="328" fill="#7c3aed" font-weight="700">├─ desktop/</text>
+    <text x="80" y="356" fill="#3b82f6" font-weight="700">├─ backend/</text>
+    <text x="80" y="384" fill="#d97706" font-weight="700">├─ ai/</text>
+    <text x="80" y="412">└─ docs/</text>
+  </g>
+  <g class="c">
+    <text x="300" y="214">컨테이너 4개</text>
+    <text x="300" y="242">키 · 비밀번호</text>
+    <text x="300" y="270">pgvector 켜기</text>
+    <text x="210" y="300">React + TS + Vite (Spring 이 제공)</text>
+    <text x="210" y="328">Electron + TS · 화면 공유</text>
+    <text x="210" y="356">Spring Boot (아래 ②)</text>
+    <text x="210" y="384">FastAPI · RAG · LLM</text>
+    <text x="210" y="412">구조 그림</text>
+  </g>
+  <line x1="62" y1="444" x2="408" y2="444" stroke="#e2e8f0"/>
+  <text x="62" y="474" font-size="14" font-weight="700" fill="#10b981">frontend/src (View · TypeScript)</text>
+  <g class="tr" font-size="13.5">
+    <text x="62" y="500">├─ main.tsx</text>
+    <text x="62" y="522">├─ App.tsx</text>
+    <text x="62" y="544">└─ api/</text>
+    <text x="84" y="566">├─ types.ts</text>
+    <text x="84" y="588">└─ client.ts</text>
+  </g>
+  <g class="c">
+    <text x="190" y="500">진입점</text>
+    <text x="190" y="522">소셜 로그인 버튼 · 내 정보</text>
+    <text x="190" y="544">서버와 주고받는 부분</text>
+    <text x="190" y="566">백엔드 DTO 와 1:1 타입</text>
+    <text x="190" y="588">fetch · CSRF · 오류 처리</text>
+  </g>
+
+  <!-- 2. backend tree -->
+  <rect x="460" y="110" width="440" height="790" rx="14" fill="#fff" stroke="#3b82f6" stroke-width="2"/>
+  <text x="482" y="146" class="h">② backend · com.tutipal</text>
+  <g class="tr">
+    <text x="482" y="182">├─ Application.java</text>
+    <text x="482" y="212" font-weight="700">├─ global/</text>
+    <text x="500" y="234">│  ├─ config/</text>
+    <text x="500" y="254">│  ├─ exception/</text>
+    <text x="500" y="274">│  ├─ common/</text>
+    <text x="500" y="294">│  └─ ai/</text>
+    <text x="482" y="318" font-weight="700">└─ domain/</text>
+    <text x="500" y="348" fill="#3b82f6" font-weight="700">   ├─ user/        ✔ 완성 예시</text>
+    <text x="518" y="374">   │  ├─ controller/</text>
+    <text x="518" y="398">   │  ├─ service/</text>
+    <text x="518" y="422">   │  ├─ repository/</text>
+    <text x="518" y="446">   │  ├─ entity/</text>
+    <text x="518" y="470">   │  └─ dto/</text>
+    <text x="518" y="496">├─ auth/</text>
+    <text x="518" y="516">├─ studysession/ quiz/</text>
+    <text x="518" y="536">├─ material/ notice/ qna/</text>
+    <text x="518" y="556">├─ tutor/</text>
+    <text x="518" y="576">├─ screenshare/</text>
+    <text x="518" y="596">└─ screensummary/ review/</text>
+  </g>
+  <g class="c">
+    <text x="690" y="234">Security · WebSocket · JPA</text>
+    <text x="690" y="254">ApiException · 전역 핸들러</text>
+    <text x="690" y="274">BaseTimeEntity · Health</text>
+    <text x="690" y="294">FastAPI 호출 한 곳</text>
+    <text x="700" y="374">UserController</text>
+    <text x="700" y="398">UserService · SocialOAuth2…</text>
+    <text x="700" y="422">UserRepository</text>
+    <text x="700" y="446">User · Role</text>
+    <text x="700" y="470">SocialProfile · UserResponse</text>
+    <text x="734" y="496">앱 로그인 코드 → 세션</text>
+    <text x="734" y="516">세션·역할 · 이해도 질문</text>
+    <text x="734" y="536">자료 · 공지 · 게시판</text>
+    <text x="734" y="556">AI 조교 (LLM + RAG)</text>
+    <text x="734" y="576">LiveKit 입장권 (JWT)</text>
+    <text x="734" y="596">화면 요약 · 복습</text>
+  </g>
+  <rect x="482" y="636" width="396" height="246" rx="10" fill="#eff6ff" stroke="#bfdbfe"/>
+  <text x="500" y="664" font-size="14.5" font-weight="800" fill="#1e3a8a">새 기능 추가 순서 (예: quiz)</text>
+  <g class="bs">
+    <text x="500" y="694">1. entity/Quiz.java  — extends BaseTimeEntity</text>
+    <text x="500" y="720">2. repository/QuizRepository — JpaRepository</text>
+    <text x="500" y="746">3. dto/  — 요청은 record + @Valid, 응답은 from()</text>
+    <text x="500" y="772">4. service/ — @Transactional, 실패는 ApiException</text>
+    <text x="500" y="798">5. controller/ — /api/quizzes, DTO만 주고받기</text>
+    <text x="500" y="824">6. frontend/api 에 같은 타입 + client 함수</text>
+    <text x="500" y="858" fill="#64748b">빈 폴더는 .gitkeep 으로 자리만 잡아 둠</text>
+  </g>
+
+  <!-- 3. request flow -->
+  <rect x="930" y="110" width="430" height="790" rx="14" fill="#fff" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="952" y="146" class="h">③ 요청 흐름 (GET /api/users/me)</text>
+
+  <rect x="980" y="176" width="330" height="62" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+  <text x="1145" y="203" text-anchor="middle" class="bt" fill="#065f46">View · React</text>
+  <text x="1145" y="225" text-anchor="middle" class="bs">api.me() → /api/users/me</text>
+  <path class="l" d="M1145,238 L1145,268"/>
+
+  <rect x="980" y="272" width="330" height="62" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+  <text x="1145" y="299" text-anchor="middle" class="bt" fill="#1e3a8a">Controller</text>
+  <text x="1145" y="321" text-anchor="middle" class="bs">요청 받기 · 로그인 사용자 id 꺼내기</text>
+  <path class="l" d="M1145,334 L1145,364"/>
+
+  <rect x="980" y="368" width="330" height="62" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+  <text x="1145" y="395" text-anchor="middle" class="bt" fill="#1e3a8a">Service</text>
+  <text x="1145" y="417" text-anchor="middle" class="bs">업무 규칙 · 트랜잭션 · 예외</text>
+  <path class="l" d="M1145,430 L1145,460"/>
+
+  <rect x="980" y="464" width="330" height="62" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+  <text x="1145" y="491" text-anchor="middle" class="bt" fill="#1e3a8a">Repository (JPA)</text>
+  <text x="1145" y="513" text-anchor="middle" class="bs">findById · save</text>
+  <path class="l" d="M1145,526 L1145,556"/>
+
+  <rect x="980" y="560" width="330" height="62" rx="10" fill="#f5f3ff" stroke="#8b5cf6" stroke-width="2"/>
+  <text x="1145" y="587" text-anchor="middle" class="bt" fill="#5b21b6">PostgreSQL · users</text>
+  <text x="1145" y="609" text-anchor="middle" class="bs">Entity(User) ↔ 테이블 한 줄</text>
+
+  <path class="l" d="M1325,600 C1355,600 1355,205 1314,205"/>
+  <text x="1145" y="642" text-anchor="middle" class="c">↺ 응답: Entity → DTO(UserResponse) → JSON 으로 React 에</text>
+
+  <rect x="952" y="652" width="386" height="230" rx="10" fill="#fef2f2" stroke="#fecaca"/>
+  <text x="970" y="680" font-size="14.5" font-weight="800" fill="#991b1b">소셜 로그인 흐름</text>
+  <g class="bs">
+    <text x="970" y="708">1. React 버튼 → /oauth2/authorization/kakao</text>
+    <text x="970" y="734">2. 카카오 로그인 → 콜백</text>
+    <text x="970" y="760">3. SocialOAuth2UserService</text>
+    <text x="990" y="782">→ SocialProfile.of() 로 응답 모양 통일</text>
+    <text x="990" y="804">→ UserService.upsert() (계정 역할 = USER)</text>
+    <text x="970" y="830">4. 세션(Redis)엔 users.id · 역할만 저장</text>
+    <text x="970" y="856">5. React 첫 화면으로 → /api/users/me</text>
+  </g>
+
+  <text x="40" y="650" class="h">규칙 3개</text>
+  <g class="bs" font-size="14">
+    <text x="40" y="684">• Controller 는 얇게: 요청/응답만,</text>
+    <text x="54" y="706">판단은 Service</text>
+    <text x="40" y="738">• 엔티티를 화면에 직접 내보내지 않기</text>
+    <text x="54" y="760">(항상 dto 로)</text>
+    <text x="40" y="792">• 다른 도메인 데이터가 필요하면</text>
+    <text x="54" y="814">그 도메인의 Service 를 호출</text>
+    <text x="54" y="836">(Repository 직접 호출 X)</text>
+  </g>
+</svg>
