@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { reviewApi } from '../api/review'
 import { sessions } from '../api/sessions'
@@ -18,13 +18,18 @@ export default function HomePage() {
   const [reviewCount, setReviewCount] = useState(0)
   /** 즐겨찾기 먼저, 그다음 최근(id 큰) 것부터 — 서버 mySessions 정렬과 같게 */
   const sorted = (list) => [...list].sort((a, b) => (b.pinned - a.pinned) || (b.id - a.id))
+  const pinning = useRef(new Set())
   async function togglePin(room) {
+    if (pinning.current.has(room.id)) return
+    pinning.current.add(room.id)
     const next = !room.pinned
     setMine((list) => sorted(list.map((r) => (r.id === room.id ? { ...r, pinned: next } : r))))
     try {
       await sessions.pin(room.id, next)
     } catch {
       setMine((list) => sorted(list.map((r) => (r.id === room.id ? { ...r, pinned: !next } : r))))
+    } finally {
+      pinning.current.delete(room.id)
     }
   }
   useEffect(() => {

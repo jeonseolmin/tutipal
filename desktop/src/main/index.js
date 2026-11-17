@@ -209,6 +209,7 @@ if (!app.requestSingleInstanceLock()) {
       if (!fromOurPage(event)) return null
       const saved = saveSettings(settings)
       widgetWindow?.webContents.send('screen-settings-changed')
+      mainWindow?.webContents.send('screen-settings-changed')
       return saved
     })
     ipcMain.handle('screen-capture', (event) => (fromOurPage(event) ? capture() : { status: 'off' }))
