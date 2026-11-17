@@ -92,3 +92,13 @@ button, input, textarea, select { font: inherit; color: inherit; }
 .float { animation: float 3.2s ease-in-out infinite; }
 
 @media (prefers-reduced-motion: reduce) { .float { animation: none; } }
+
+/* 캐릭터 Sage: 스프라이트 시트 한 줄을 칸 단위로 넘긴다 (Mascot.jsx 가 --k 배율 · --n 칸 수를 넣음) */
+.sage-box { position: relative; display: inline-block; flex: none; vertical-align: middle; overflow-x: clip; } /* 칸 좌우 빈 여백만 잘라냄 (점프는 위로 넘침) */
+.sage {
+  position: absolute; background-repeat: no-repeat;
+  background-size: calc(var(--k) * 1536px) calc(var(--k) * 2288px);
+  animation-name: sage-play; animation-timing-function: steps(var(--n)); animation-iteration-count: infinite;
+}
+@keyframes sage-play { from { background-position-x: 0; } to { background-position-x: calc(var(--n) * var(--k) * -192px); } }
+@media (prefers-reduced-motion: reduce) { .sage { animation: none; } }

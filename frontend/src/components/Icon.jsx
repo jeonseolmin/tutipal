@@ -20,6 +20,7 @@ const PATHS = {
   window: 'M3 5h18v14H3z M3 9h18 M6 7h.01 M9 7h.01',
   shield: 'M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6z M8.5 12l2.5 2.5 4.5-5',
   screen: 'M3 4h18v12H3z M8 20h8 M12 16v4',
+  trash: 'M4 7h16 M9 7V4h6v3 M6 7l1 13h10l1-13 M10 11v6 M14 11v6',
 }
 
 export default function Icon({ name, size = 22 }) {
