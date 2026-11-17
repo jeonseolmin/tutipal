@@ -8,7 +8,7 @@ const MENU = [
   { to: '/chat', icon: 'chat', label: '도우미 챗봇', ready: true },
   { to: '/review', icon: 'book', label: '복습 기록', ready: true },
   { to: '/stats', icon: 'chart', label: '학습 기록 (준비 중)', ready: false },
-  { to: '/settings', icon: 'settings', label: '설정 (준비 중)', ready: false },
+  { to: '/settings', icon: 'settings', label: '설정', ready: true },
 ]
 
 /** 목업 공통 틀: 왼쪽 세로 아이콘 메뉴 카드 + 오른쪽 본문 */

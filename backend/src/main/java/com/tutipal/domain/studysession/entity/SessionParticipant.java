@@ -31,6 +31,10 @@ public class SessionParticipant extends BaseTimeEntity {
     @Column(nullable = false, length = 20)
     private SessionRole role;
 
+    /** 홈 목록에서 즐겨찾기 (맨 위 고정) */
+    @Column(nullable = false)
+    private boolean pinned;
+
     protected SessionParticipant() {
     }
 
@@ -45,4 +49,6 @@ public class SessionParticipant extends BaseTimeEntity {
     public Long getSessionId() { return sessionId; }
     public Long getUserId() { return userId; }
     public SessionRole getRole() { return role; }
+    public boolean isPinned() { return pinned; }
+    public void setPinned(boolean pinned) { this.pinned = pinned; }
 }

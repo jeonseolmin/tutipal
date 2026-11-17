@@ -23,6 +23,7 @@ Claude Code · Codex · Cursor 등 어떤 도구든 작업 전에 이 파일을 
 - **권한은 계정 역할이 아니라 "이 세션의 참가자/선생님인가"** 를 Service 에서 확인 (`StudySessionService.requireActiveRole` · `requireTeacherOf`). 참가자가 아니면 404(있는지도 숨김), 학생이 선생님 기능이면 403
 - FastAPI 호출은 `global/ai/AiClient` 한 곳으로, GPU 를 쓰는 호출은 `AiSlots` 로 감싼다 (동시 2개)
 - DB 를 바꾸면 `src/main/resources/db/migration/V<다음번호>__설명.sql` 추가. **이미 합쳐진 마이그레이션은 고치지 않는다.** `ddl-auto: validate` 라 엔티티와 테이블이 다르면 기동 실패
+- DB 를 바꾸면 ERD 도 다시: `python docs/erd/source/render.py` (물리는 자동, 논리는 `docs/erd/source/logical.py` 목록을 손으로)
 - 실시간 알림(STOMP)은 "무엇이 바뀌었나(type, id)" 만 보내고 화면이 REST 로 다시 읽는다 (`global/realtime/SessionEvents`, 커밋 뒤 전송). 권한 검사는 REST 한 곳에서
 - 트랜잭션 밖(가상 스레드 등)에서 DB 를 바꾸는 쿼리는 그 메서드에 `@Transactional` 이 있어야 한다
 ### frontend

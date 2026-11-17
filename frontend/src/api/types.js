@@ -22,7 +22,7 @@
 
 /**
  * com.tutipal.domain.tutor.TopicPrompt (소문자로 보냄)
- * @typedef {'general' | 'coding' | 'english' | 'math'} Topic
+ * @typedef {'general' | 'coding' | 'english' | 'math'} Topic 개인 챗봇 주제 (단체 방은 과목 이름 문자열)
  */
 
 /**
@@ -49,7 +49,8 @@
  * @typedef {Object} SessionResponse
  * @property {number} id
  * @property {string} title
- * @property {Topic} topic
+ * @property {string} topic 과목 이름 ("코딩", "한국사", 직접 쓴 이름, 최대 30자)
+ * @property {boolean} pinned 내가 즐겨찾기한 방 (홈 목록 맨 위, GET /api/sessions 에서만 의미 있음)
  * @property {string} inviteCode
  * @property {SessionRole} myRole
  * @property {number} difficulty
@@ -72,7 +73,7 @@
 /**
  * com.tutipal.domain.studysession.dto.UpdateSettingsRequest
  * @typedef {Object} SessionSettings
- * @property {Topic} topic
+ * @property {string} topic 과목 이름 (최대 30자)
  * @property {number} difficulty
  * @property {boolean} hideAnswers
  * @property {boolean} preferMaterials

@@ -65,6 +65,16 @@ public class StudySessionController {
         return service.updateSettings(userId(me), id, request);
     }
 
+    /** 즐겨찾기: {"pinned": true|false} */
+    @PutMapping("/{id}/pin")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void pin(@AuthenticationPrincipal OAuth2User me, @PathVariable Long id, @RequestBody PinRequest request) {
+        service.pin(userId(me), id, request.pinned());
+    }
+
+    public record PinRequest(boolean pinned) {
+    }
+
     @PostMapping("/{id}/end")
     public SessionResponse end(@AuthenticationPrincipal OAuth2User me, @PathVariable Long id) {
         return service.end(userId(me), id);

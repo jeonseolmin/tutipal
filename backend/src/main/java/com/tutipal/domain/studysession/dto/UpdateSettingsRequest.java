@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Size;
 
 /** 목업 21: 선생님이 정하는 학생 챗봇 설정. */
 public record UpdateSettingsRequest(
-        @NotBlank @Size(max = 20) String topic,
+        @NotBlank @Size(max = 30) String topic,
         @Min(1) @Max(5) int difficulty,
         boolean hideAnswers,
         boolean preferMaterials) {

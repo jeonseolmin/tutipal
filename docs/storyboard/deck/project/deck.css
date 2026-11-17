@@ -1,0 +1,67 @@
+:root {
+  --ink: #1F2633;
+  --ink-2: #4A5568;
+  --paper: #F4F7FC;
+  --card: #FBFCFE;
+  --line: #D5DEEA;
+  --blue: #1A73F0;
+  --blue-weak: #E4EEFE;
+  --night: #172033;
+}
+body { font-family: 'Noto Sans KR', Arial, sans-serif; color: var(--ink); }
+section { counter-increment: page; background: var(--paper); padding: 88px 112px 120px; display: flex; flex-direction: column; gap: 28px; }
+
+/* 머리: 화면 ID · 화면명 · 경로 */
+.head { display: flex; align-items: flex-end; gap: 28px; }
+.head h2 { font-size: 56px; font-weight: 700; line-height: 1.1; }
+.eyebrow { font-size: 26px; font-weight: 700; color: var(--blue); padding: 6px 18px; border-radius: 999px; background: var(--blue-weak); }
+.path { font-size: 26px; color: var(--ink-2); margin-left: auto; font-family: 'Courier New', monospace; }
+
+/* 화면 한 장 + 오른쪽 설명 */
+.body { display: flex; gap: 40px; flex: 1; align-items: flex-start; }
+.shot { width: 1180px; height: 729px; object-fit: contain; border: 2px solid var(--line); border-radius: 16px; background: #EEF3FA; }
+.info { flex: 1; height: 729px; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px; padding: 28px 30px; background: var(--card); border: 2px solid var(--line); border-radius: 16px; }
+.info h3 { font-size: 28px; font-weight: 700; color: var(--blue); }
+.info p { font-size: 24px; line-height: 1.45; color: var(--ink-2); }
+.info ol, .info ul { font-size: 24px; line-height: 1.45; color: var(--ink); padding-left: 32px; margin: 0; }
+.info li { margin-bottom: 6px; }
+
+/* 화면 여러 장 + 아래 설명 */
+.body-col { display: flex; flex-direction: column; gap: 28px; flex: 1; }
+.shots { display: flex; gap: 40px; }
+.shot-2 { width: 828px; height: 512px; object-fit: contain; border: 2px solid var(--line); border-radius: 16px; background: #EEF3FA; }
+.shot-3 { width: 538px; height: 333px; object-fit: contain; border: 2px solid var(--line); border-radius: 16px; background: #EEF3FA; }
+.caps { display: flex; gap: 40px; }
+.cap { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+.cap h3 { font-size: 28px; font-weight: 700; color: var(--ink); }
+.cap p { font-size: 24px; line-height: 1.45; color: var(--ink-2); }
+.cap .path { margin-left: 0; font-size: 24px; }
+
+/* 아래 띠: 문서 이름 · 쪽 번호 */
+.foot { position: absolute; left: 112px; bottom: 48px; width: 1696px; font-size: 24px; color: #6B7585; }
+.pg { position: absolute; right: 112px; bottom: 48px; width: 120px; font-size: 24px; color: #6B7585; text-align: right; }
+.pg::after { content: counter(page); }
+
+/* 표지 */
+.cover { background: var(--night); justify-content: center; gap: 36px; padding: 128px; }
+.cover h1 { font-size: 120px; font-weight: 700; color: #F4F7FC; line-height: 1.05; }
+.cover .sub { font-size: 40px; color: #BFD0EA; }
+.cover .meta { font-size: 28px; color: #8FA3C2; }
+.cover .tag { font-size: 28px; font-weight: 700; color: var(--night); background: #8DB8FF; padding: 8px 22px; border-radius: 999px; align-self: flex-start; }
+.cover-shot { position: absolute; right: 128px; top: 250px; width: 820px; height: 507px; object-fit: contain; border-radius: 20px; border: 2px solid #33415C; }
+
+/* 흐름도 */
+.flow-grid { display: flex; flex-direction: column; gap: 36px; flex: 1; justify-content: center; }
+.lane { display: flex; align-items: center; gap: 22px; }
+.lane-name { width: 230px; font-size: 26px; font-weight: 700; color: var(--ink-2); }
+.node { padding: 20px 26px; background: var(--card); border: 2px solid var(--line); border-radius: 16px; font-size: 28px; font-weight: 700; color: var(--ink); }
+.node.key { background: var(--blue); border-color: var(--blue); color: #FBFCFE; }
+.node.soft { background: var(--blue-weak); border-color: #B9D3FB; }
+.arrow { font-size: 36px; color: var(--blue); font-weight: 700; }
+.note { font-size: 24px; color: var(--ink-2); }
+
+/* 다음 작업 */
+.todo { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+.todo-card { display: flex; flex-direction: column; gap: 10px; padding: 30px 34px; background: var(--card); border: 2px solid var(--line); border-radius: 16px; }
+.todo-card h3 { font-size: 32px; font-weight: 700; color: var(--ink); }
+.todo-card p { font-size: 24px; line-height: 1.45; color: var(--ink-2); }

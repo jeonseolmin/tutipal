@@ -1,3 +1,50 @@
+# Handoff — feat/settings-sage
+_Last updated: 2026-11-17T17:50:00+09:00 · Tool: claude-code · Session: default_
+
+## Active Task
+UI polish and design docs on PR #16 (`feat/settings-sage` → `develop`): new character Sage, settings page, home room lists with pins, free-text subjects, "방" wording, plus ERD and storyboard under `docs/`.
+
+## Current State
+**Done (all on PR #16, verified in the running app):**
+- Character: `frontend/src/components/Mascot.jsx` plays a sprite sheet (`frontend/src/assets/sage-sprites.webp`, 8×11 cells of 192×208) with CSS `steps()`; moods map to sheet rows. Current sheet = blue owl "sage-ai-glasses". App/tray icons + favicon match.
+- Settings `/settings` (mockup 05): screen-analysis / review / account tabs, no new backend API.
+- Home: room create/join cards on top, "내가 방장인 방" / "참여한 방" lists (scroll inside each), star pin → `session_participants.pinned` (V10) + `PUT /api/sessions/{id}/pin`.
+- Subjects: `study_sessions.topic` is a free-text subject name (V9); `components/SubjectPicker.jsx` = 32-item dropdown + 직접 입력, used by create room, teacher settings and personal chat. `TopicPrompt.promptForSubject` / `personalPrompt` quote custom names as data.
+- All user-facing "세션" → "방" (UI + backend error messages).
+- Docs reorganized: `docs/{design,architecture,erd,storyboard,mockups}` with `docs/README.md`; ERD (logical + physical) and storyboard PDF regenerate via `docs/*/source/render.py`.
+- Tests: backend 76 pass; `frontend npm run build` OK; `desktop npm run check` OK.
+
+**Tried and rejected:**
+- Teal (Sage-green) color theme — user kept the blue theme and recolored the character instead.
+- Mermaid for the logical ERD — it cannot render Korean attribute names; logical ERD is hand-placed HTML/SVG (`docs/erd/source/logical.py`).
+
+## Next Steps
+1. Merge PR #16 into `develop` (review needed).
+2. Re-capture the storyboard with the blue character: run the app with CDP, `docs/storyboard/source/capture.py`, re-upload images to the Slides artifact, update `BLOBS` in `render.py`, re-render PDF.
+3. Rebuild the installer for the new icon: `cd desktop && npm run dist`.
+4. Pending from before: Google client secret copy by team lead, Kakao/Naver app registration, whether to protect `develop`.
+
+## Key Decisions
+- **Decision:** Keep blue theme, character recolored to blue (2026-11-17) · **Why:** user preferred blue after a teal preview · **Alternative considered:** teal theme.
+- **Decision:** Session topic is free text (≤30 chars) · **Why:** user wanted dropdown + 직접 입력 · **Alternative considered:** fixed enum of 3.
+- **Decision:** Pins stored server-side per participant · **Why:** survives devices/reloads · **Alternative considered:** localStorage.
+- Earlier decisions (JS not TS, PRs to `develop`, public repo) unchanged.
+
+## Open Questions
+- [ ] Protect `develop` with required reviews?
+- [ ] Who copies the Google secret; may unused secrets be deleted?
+- [ ] Teammates' GitHub IDs for invites.
+
+## Working Environment
+- Branch: `feat/settings-sage` · Base: `develop`
+- Commands: `docker compose up -d --build` · `cd backend && ./gradlew test` · `cd frontend && npm run build` · `cd desktop && npm run check` · ERD `python docs/erd/source/render.py` · storyboard PDF `python docs/storyboard/source/render.py`
+- Known gaps: storyboard screenshots show the old green owl; installer not rebuilt; setting switches and teacher subject change not clicked through in UI (service tests only).
+
+## Context for the next tool (3-5 sentences)
+TUTIPAL is an Electron + React(JS) desktop study app served by Spring Boot 4, with FastAPI + local Ollama, Postgres/pgvector, Redis and LiveKit; features for stages 1–5 are done and the team works through GitHub PRs into `develop`. The Korean notes below are the team's canonical status document (its "확정된 결정" table must not change without the user's OK) and `AGENTS.md` holds coding rules and real pitfalls. UI changes are verified by driving Electron over CDP (`desktop/scripts/cdp.py`), always quitting the app afterwards. Written by Claude Code; reply to the user in Korean.
+
+---
+
 # TUTIPAL 인수인계 (2026-11-16)
 
 다음 세션은 이 파일 → `README.md` → 필요한 코드만 읽고 이어서 작업한다. 사용자에게는 한국어로 답한다.
@@ -8,10 +55,13 @@ TUTIPAL = AI 도우미 챗봇이 붙은 데스크톱 학습 서비스 (포트폴
 
 ## 문서 (먼저 볼 것)
 - 설계 문서 (Claude Docs, 최신 기준): https://claude.ai/artifact/19zPFDSXRdBFWS5Hbysz56
-  - PDF 사본: `docs/TUTIPAL-설계문서.pdf`
+  - PDF 사본: `docs/design/TUTIPAL-설계문서.pdf`
   - 문서 댓글 "화면 요약을 세션보다 먼저 할지" → **사용자 답: 세션 먼저 (원래 계획대로), 2026-11-16**
-- 보안 근거: `docs/security-session-rationale.pdf` (세션 방식 · 리프레시 토큰 미사용 근거, OWASP 점검)
+- 보안 근거: `docs/design/security-session-rationale.pdf` (세션 방식 · 리프레시 토큰 미사용 근거, OWASP 점검)
 - 화면 목업: `docs/mockups/screens/01~32`, `docs/mockups/widgets/` (구현할 때 번호로 찾기, 디자인 기준)
+- ERD (논리 · 물리): `docs/erd/` — DB 를 바꾸면 `python docs/erd/source/render.py` 로 다시
+- 스토리보드 (견본, 2026-11-17): `docs/storyboard/TUTIPAL-storyboard.pdf`, 덱 https://claude.ai/artifact/7Vq6ek9Zo8UuxqvcKf29bD (캡처는 예전 초록 캐릭터)
+- `docs/` 전체 목차: `docs/README.md`
 - LiveKit 설정: `livekit.yaml` (UDP 7882 하나 · TCP 7881), 키는 `.env` 의 `LIVEKIT_*`
 - 화면공유 흐름 PDF: 팀장 PC 에만 있음, 저장소에는 없음 (구성도에 그림 설명 경로 · 연결 경로 카드가 빠진 상태)
 

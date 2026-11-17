@@ -88,21 +88,31 @@ class TutorServiceTest {
     }
 
     @Test
-    void unknownTopicFailsBeforeCallingAi() {
+    void blankTopicFailsBeforeCallingAi() {
         FakeAi ai = new FakeAi();
         TutorService service = new TutorService(ai, null, null, new AiSlots(1, Duration.ofMillis(100)));
-        assertThrows(ApiException.class, () -> service.chat(1L, request("history"), s -> { }, d -> { }));
+        assertThrows(ApiException.class, () -> service.chat(1L, request("   "), s -> { }, d -> { }));
         assertEquals(null, ai.system);
     }
 
     @Test
+    void personalChatTakesAnySubjectName() {
+        FakeAi ai = new FakeAi();
+        TutorService service = new TutorService(ai, null, null, new AiSlots(1, Duration.ofMillis(100)));
+        service.chat(1L, request("한국사"), s -> { }, d -> { });
+        assertTrue(ai.system.endsWith("\"한국사\""), ai.system);
+        service.chat(1L, request("코딩"), s -> { }, d -> { });
+        assertEquals(TopicPrompt.CODING.systemPrompt(), ai.system);
+    }
+
+    @Test
     void sessionPromptAddsTeacherSettings() {
-        String hidden = TutorService.sessionPrompt(new ChatSettings(TopicPrompt.MATH, 1, true, false));
+        String hidden = TutorService.sessionPrompt(new ChatSettings("수학", 1, true, false));
         assertTrue(hidden.startsWith(TopicPrompt.MATH.systemPrompt()));
         assertTrue(hidden.contains("아주 쉬운 말로"));
         assertTrue(hidden.contains("바로 알려주지 않는다"));
 
-        String open = TutorService.sessionPrompt(new ChatSettings(TopicPrompt.CODING, 5, false, false));
+        String open = TutorService.sessionPrompt(new ChatSettings("코딩", 5, false, false));
         assertTrue(open.contains("심화"));
         assertTrue(!open.contains("바로 알려주지 않는다"));
     }
