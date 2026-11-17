@@ -14,7 +14,7 @@ import jakarta.validation.constraints.Size;
  * ponytail: 대화는 저장하지 않음, 복습 · 기록 기능이 필요해지면 서버 저장
  */
 public record ChatRequest(
-        @NotBlank @Size(max = 20) String topic,
+        @NotBlank @Size(max = 30) String topic,
         @NotEmpty @Size(max = 40) List<@Valid Message> messages,
         Long sessionId) {
 

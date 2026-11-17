@@ -11,6 +11,7 @@ import LoginPage from './pages/LoginPage'
 import OverlayPage from './pages/OverlayPage'
 import ReviewPage from './pages/ReviewPage'
 import ScreenConsentPage from './pages/ScreenConsentPage'
+import SettingsPage from './pages/SettingsPage'
 import WidgetPage from './pages/WidgetPage'
 
 export default function App() {
@@ -31,6 +32,7 @@ export default function App() {
               <Route path="sessions/:id" element={<SessionPage />} />
               <Route path="screen-consent" element={<ScreenConsentPage />} />
               <Route path="review" element={<ReviewPage />} />
+              <Route path="settings" element={<SettingsPage />} />
             </Route>
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />

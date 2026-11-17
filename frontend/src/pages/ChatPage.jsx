@@ -3,30 +3,36 @@ import { useSearchParams } from 'react-router-dom'
 import { streamChat } from '../api/tutor'
 import Icon from '../components/Icon'
 import Mascot from '../components/Mascot'
+import SubjectPicker from '../components/SubjectPicker'
 
-export const TOPIC_LABEL = { general: '자유', coding: '코딩', english: '영어', math: '수학' }
+/** 예전 주소(?topic=coding)도 열리게 id → 과목 이름 */
+const LEGACY = { general: '자유 주제', coding: '코딩', english: '영어', math: '수학' }
+const DEFAULT_TOPIC = '자유 주제'
 /** ChatRequest.Message.content 의 @Size(max) 와 같게 */
 const MAX_CONTENT = 8000
 
 const EXAMPLES = {
-  general: ['오늘 공부 계획 세우는 법 알려줘', '집중이 안 될 때 어떻게 해?'],
-  coding: ['자바에서 static 은 언제 써?', 'NullPointerException 은 왜 나?'],
-  english: ['"I am agree" 맞는 표현이야?', '면접에서 쓸 자기소개 문장 다듬어줘'],
-  math: ['이차방정식 근의 공식 유도해줘', '미분과 적분의 관계가 뭐야?'],
+  '자유 주제': ['오늘 공부 계획 세우는 법 알려줘', '집중이 안 될 때 어떻게 해?'],
+  코딩: ['자바에서 static 은 언제 써?', 'NullPointerException 은 왜 나?'],
+  영어: ['"I am agree" 맞는 표현이야?', '면접에서 쓸 자기소개 문장 다듬어줘'],
+  수학: ['이차방정식 근의 공식 유도해줘', '미분과 적분의 관계가 뭐야?'],
 }
+
+/** 개인 챗봇 · 단체 방 모두 과목 이름("한국사") 으로 주고받는다. 서버가 이 이름으로 챗봇 지시문을 만든다 (TopicPrompt) */
+const examplesOf = (topic) => EXAMPLES[topic] ?? [`${topic} 기초부터 차근차근 알려줘`, `${topic} 공부 순서를 짜 줘`]
 
 function toTopic(value) {
-  return value && value in TOPIC_LABEL ? (value) : 'general'
+  return LEGACY[value] ?? (value ?? DEFAULT_TOPIC)
 }
 
-/** 목업 06 도우미 챗봇 (개인 학습): 주소의 ?topic= 으로 주제 선택 */
+/** 목업 06 도우미 챗봇 (개인 학습): 주소의 ?topic= 과목 이름 (드롭다운 · 직접 입력) */
 export default function ChatPage() {
   const [params, setParams] = useSearchParams()
   const ask = params.get('ask')
   return (
     <ChatPanel
       topic={toTopic(params.get('topic'))}
-      onTopicChange={(t) => setParams({ topic: t })}
+      onTopicChange={(t) => setParams({ topic: t }, { replace: true })}
       initialAsk={ask ?? undefined}
       onAsked={() => setParams((p) => { p.delete('ask'); return p }, { replace: true })}
     />
@@ -77,7 +83,7 @@ export function ChatPanel({ topic, onTopicChange, sessionId, initialAsk, onAsked
     const controller = new AbortController()
     abortRef.current = controller
     try {
-      await streamChat(topic, history.slice(-20), (delta) => {
+      await streamChat(topic.trim() || DEFAULT_TOPIC, history.slice(-20), (delta) => {
         setBubbles((prev) => {
           const next = [...prev]
           const last = next[next.length - 1]
@@ -127,16 +133,12 @@ export function ChatPanel({ topic, onTopicChange, sessionId, initialAsk, onAsked
       <header className="chat-head">
         <h1>도우미 챗봇</h1>
         {onTopicChange ? (
-          <label className="badge topic-select">
-            주제:
-            <select value={topic} onChange={(e) => onTopicChange(toTopic(e.target.value))} aria-label="주제 선택">
-              {(Object.keys(TOPIC_LABEL)).map((t) => (
-                <option key={t} value={t}>{TOPIC_LABEL[t]}</option>
-              ))}
-            </select>
-          </label>
+          <div className="topic-select">
+            <span className="muted">주제</span>
+            <SubjectPicker value={topic} onChange={onTopicChange} />
+          </div>
         ) : (
-          <span className="badge">{TOPIC_LABEL[topic]} · 선생님 설정 적용</span>
+          <span className="badge">{topic} · 선생님 설정 적용</span>
         )}
       </header>
 
@@ -144,9 +146,9 @@ export function ChatPanel({ topic, onTopicChange, sessionId, initialAsk, onAsked
         {bubbles.length === 0 && (
           <div className="chat-empty">
             <Mascot mood="curious" size={120} float />
-            <p>무엇이든 물어보세요. {TOPIC_LABEL[topic]} 주제에 맞춰 답해 드려요.</p>
+            <p>무엇이든 물어보세요. {topic.trim() || DEFAULT_TOPIC} 주제에 맞춰 답해 드려요.</p>
             <div className="chips">
-              {EXAMPLES[topic].map((q) => (
+              {examplesOf(topic.trim() || DEFAULT_TOPIC).map((q) => (
                 <button key={q} className="chip" onClick={() => void send(q)}>{q}</button>
               ))}
             </div>

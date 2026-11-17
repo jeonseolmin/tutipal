@@ -5,8 +5,8 @@ import { useSessionEvents } from '../api/realtime'
 import { sessions } from '../api/sessions'
 import Icon from '../components/Icon'
 import Mascot from '../components/Mascot'
-import { ChatPanel, TOPIC_LABEL } from './ChatPage'
-import { TOPICS } from './HomePage'
+import { ChatPanel } from './ChatPage'
+import SubjectPicker from '../components/SubjectPicker'
 import { BoardPanel, MaterialsPanel, NoticesPanel } from './BoardPanels'
 import { StudentHelp, StudentLiveTab, TeacherHelpTab, TeacherShareTab } from './LivePanels'
 import { notices } from '../api/board'
@@ -19,7 +19,7 @@ export default function SessionPage() {
   const [error, setError] = useState('')
 
   const reload = useCallback(() => {
-    sessions.get(id).then(setSession, (e) => setError(e instanceof Error ? e.message : '세션을 열지 못했어요'))
+    sessions.get(id).then(setSession, (e) => setError(e instanceof Error ? e.message : '방을 열지 못했어요'))
   }, [id])
   useEffect(reload, [reload])
 
@@ -40,7 +40,7 @@ export default function SessionPage() {
       <div className="center-page">
         <div className="card session-card">
           <Mascot mood="sleep" size={110} />
-          <p>「{session.title}」 세션은 끝났어요</p>
+          <p>「{session.title}」 방은 닫혔어요</p>
           <Link to="/" className="btn">홈으로</Link>
         </div>
       </div>
@@ -62,7 +62,7 @@ function SessionHead({ session, badge, live, actions }) {
           </span>
         </h1>
         <p className="muted">
-          {TOPIC_LABEL[session.topic]} · 참가자 {session.participantCount}명 · 코드 <b>{session.inviteCode}</b>
+          {session.topic} · 참가자 {session.participantCount}명 · 코드 <b>{session.inviteCode}</b>
         </p>
       </div>
       {actions && <div className="session-actions">{actions}</div>}
@@ -278,13 +278,9 @@ function Settings({ session, onChange }) {
 
   return (
     <form className="card session-body settings" onSubmit={onSubmit}>
-      <div className="radio-row" role="radiogroup" aria-label="학습 주제">
-        {TOPICS.map((t) => (
-          <label key={t.id} className={`radio-card${form.topic === t.id ? ' on' : ''}`}>
-            <input type="radio" name="topic" checked={form.topic === t.id} onChange={() => set({ topic: t.id })} />
-            {t.label}
-          </label>
-        ))}
+      <div className="field">
+        <strong>공부할 과목</strong>
+        <SubjectPicker value={form.topic} onChange={(topic) => set({ topic })} />
       </div>
       <label className="setting-row">
         <span className="muted">쉬움</span>
@@ -323,10 +319,10 @@ function EndButton({ session, onChange }) {
   return confirming ? (
     <span className="tabs-end">
       <span className="muted">학생 참여와 챗봇이 막혀요.</span>
-      <button className="btn btn-sm btn-danger" onClick={() => void end()}>세션 종료</button>
+      <button className="btn btn-sm btn-danger" onClick={() => void end()}>방 닫기</button>
       <button className="btn btn-sm" onClick={() => setConfirming(false)}>취소</button>
     </span>
   ) : (
-    <button className="btn btn-sm tabs-end" onClick={() => setConfirming(true)}>세션 종료…</button>
+    <button className="btn btn-sm tabs-end" onClick={() => setConfirming(true)}>방 닫기…</button>
   )
 }

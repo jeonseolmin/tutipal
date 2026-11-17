@@ -4,8 +4,9 @@ AI 도우미 챗봇이 붙은 학습 서비스. 누구나 **개인 학습**을 �
 세션을 연 사람이 그 세션에서만 선생님이 된다. 학생과 선생님 모두 같은 Electron 데스크톱 앱을 쓴다 (선생님은 앱 안의 선생님 모드, 별도 웹 없음).
 서버는 팀장 PC 한 대(로컬 서버 + 로컬 LLM), AWS 는 쓰지 않는다.
 
-그림(`docs/`): `architecture.png` 전체 · `structure.png` 디렉토리/MVC · `screen-share.png` 화면공유 ·
-`desktop-options.png` · `tauri-vs-electron.png` 데스크톱 기술 선택 근거 · `app-auth.png` 로그인 (※ 세션 통일 전 그림)
+설계 자료(`docs/`, 목차는 `docs/README.md`): `architecture/` 구조 그림 (`architecture.png` 전체 · `structure.png` 디렉토리/MVC ·
+`screen-share.png` 화면공유 · `desktop-options.png` · `tauri-vs-electron.png` 데스크톱 기술 선택 근거 · `app-auth.png` 로그인 ※ 세션 통일 전 그림) ·
+`erd/` 논리 · 물리 ERD · `storyboard/` 화면 스토리보드 PDF · `design/` 설계 문서 · 보안 근거 · `mockups/` 화면 목업
 
 ## 기능
 
@@ -41,8 +42,8 @@ AI 조교: **LLM 이 직접 답하는 것이 기본**, 세션 자료 중 관련 
 ```
 TUTIPAL/
 ├─ docker-compose.yml · .env.example · db/init.sql
-├─ docs/                  설계 그림
-├─ frontend/              React + TS + Vite — 빌드 결과를 Spring 이미지에 넣어 Spring 이 제공 (Electron 이 서버 주소로 열어서 사용)
+├─ docs/                  설계 자료 (design · architecture · erd · storyboard · mockups, docs/README.md)
+├─ frontend/              React + JavaScript + Vite — 빌드 결과를 Spring 이미지에 넣어 Spring 이 제공 (Electron 이 서버 주소로 열어서 사용)
 │  └─ src/
 │     ├─ main.jsx · App.jsx
 │     ├─ api/             types.js (백엔드 DTO 1:1, JSDoc) · client.js (fetch · CSRF · 오류)

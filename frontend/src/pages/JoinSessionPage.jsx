@@ -28,7 +28,7 @@ export default function JoinSessionPage() {
     <div className="center-page">
       <form className="card session-card join-card" onSubmit={onSubmit}>
         <Mascot mood="happy" size={120} float />
-        <h1>세션 참여</h1>
+        <h1>방 참여하기</h1>
         <input
           className="code-input"
           value={code}
