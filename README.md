@@ -84,15 +84,27 @@ TUTIPAL/
 ### 프론트 규칙
 - 서버와 주고받는 코드는 `api/` 에만. 백엔드 DTO 를 바꾸면 `api/types.ts` 도 같이 수정
 
-## 실행
+## 처음 실행하기 (팀원)
+
+준비물: Docker Desktop, [Ollama](https://ollama.com), Node 22+, JDK 21 (백엔드 테스트용), [uv](https://docs.astral.sh/uv/) (AI 테스트용)
 
 ```sh
-cp .env.example .env          # 값 채우기 (소셜 키 없이도 기동은 됨)
-docker compose up -d --build
-curl http://localhost/health  # {"status":"ok","virtualThread":true}
+git clone https://github.com/jeonseolmin/tutipal.git && cd tutipal
+cp .env.example .env
+#   ① POSTGRES_PASSWORD · REDIS_PASSWORD · AI_INTERNAL_KEY · LIVEKIT_API_SECRET 에 각자 랜덤 값
+#      python -c "import secrets; print(secrets.token_hex(32))"
+#   ② DEV_LOGIN=true (내 PC 에서만, 소셜 키 없이 로그인)
+ollama pull gemma3:12b && ollama pull bge-m3      # 한 번 (약 9GB). GPU 가 약하면 .env 의 OLLAMA_BASE_URL 을 팀장 PC 로
+docker compose up -d --build                      # backend · ai · db · redis · livekit
+curl http://localhost/health                      # {"status":"ok","virtualThread":true}
 ```
 
-브라우저에서 `http://localhost` → 카카오 · 네이버 · 구글 로그인 버튼.
+브라우저에서 `http://localhost` → "개발용 로그인 (내 PC 전용)". 앱은 `cd desktop && npm install && npm run dev`.
+값 설명은 `.env.example` 주석, 협업 규칙은 `CONTRIBUTING.md`, AI 에이전트 규칙은 `AGENTS.md`.
+
+## 실행 (소셜 로그인)
+
+소셜 키를 받았으면 `.env` ③ 에 넣고 `docker compose up -d --build` → 브라우저 `http://localhost` → 카카오 · 네이버 · 구글 로그인 버튼.
 5432 를 이미 쓰는 PostgreSQL 이 있으면 `.env` 의 `DB_HOST_PORT=5433` 그대로 둔다.
 
 ### 화면 개발
