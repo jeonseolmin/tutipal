@@ -16,6 +16,17 @@ export default function HomePage() {
   const { me } = useAuth()
   const [mine, setMine] = useState(null)
   const [reviewCount, setReviewCount] = useState(0)
+  /** 즐겨찾기 먼저, 그다음 최근(id 큰) 것부터 — 서버 mySessions 정렬과 같게 */
+  const sorted = (list) => [...list].sort((a, b) => (b.pinned - a.pinned) || (b.id - a.id))
+  async function togglePin(room) {
+    const next = !room.pinned
+    setMine((list) => sorted(list.map((r) => (r.id === room.id ? { ...r, pinned: next } : r))))
+    try {
+      await sessions.pin(room.id, next)
+    } catch {
+      setMine((list) => sorted(list.map((r) => (r.id === room.id ? { ...r, pinned: !next } : r))))
+    }
+  }
   useEffect(() => {
     sessions.mine().then(setMine, () => setMine([]))
     reviewApi.items().then((l) => setReviewCount(l.length), () => undefined)
@@ -47,11 +58,13 @@ export default function HomePage() {
           title="내가 방장인 방"
           rooms={mine?.filter((r) => r.myRole === 'TEACHER')}
           empty="아직 만든 방이 없어요. 위의 방 만들기로 시작해 보세요"
+          onPin={togglePin}
         />
         <RoomList
           title="참여한 방"
           rooms={mine?.filter((r) => r.myRole !== 'TEACHER')}
           empty="아직 참여한 방이 없어요. 초대 코드를 받으면 방 참여하기로 들어가요"
+          onPin={togglePin}
         />
       </section>
 
@@ -64,8 +77,8 @@ export default function HomePage() {
   )
 }
 
-/** 방 목록 한 칸: 길어지면 칸 안에서 스크롤 (닫힌 방은 서버가 빼고 줌) */
-function RoomList({ title, rooms, empty }) {
+/** 방 목록 한 칸: 길어지면 칸 안에서 스크롤, 별(즐겨찾기)을 누르면 맨 위에 고정 (닫힌 방은 서버가 빼고 줌) */
+function RoomList({ title, rooms, empty, onPin }) {
   return (
     <div className="card room-list">
       <h2>{title} {rooms && <span className="badge badge-gray">{rooms.length}</span>}</h2>
@@ -73,11 +86,23 @@ function RoomList({ title, rooms, empty }) {
         {!rooms && <p className="muted">불러오는 중…</p>}
         {rooms?.length === 0 && <p className="muted">{empty}</p>}
         {rooms?.map((r) => (
-          <Link key={r.id} to={`/sessions/${r.id}`} className="room-row">
-            <strong>{r.title}</strong>
-            <span className="badge">{r.topic}</span>
-            <span className="muted small">참가자 {r.participantCount}명</span>
-          </Link>
+          <div key={r.id} className={r.pinned ? 'room-row pinned' : 'room-row'}>
+            <button
+              type="button"
+              className="pin-btn"
+              onClick={() => onPin(r)}
+              aria-pressed={r.pinned}
+              aria-label={r.pinned ? `${r.title} 즐겨찾기 해제` : `${r.title} 즐겨찾기`}
+              title={r.pinned ? '즐겨찾기 해제' : '즐겨찾기 (맨 위 고정)'}
+            >
+              <Icon name="star" size={20} />
+            </button>
+            <Link to={`/sessions/${r.id}`} className="room-link">
+              <strong>{r.title}</strong>
+              <span className="badge">{r.topic}</span>
+              <span className="muted small">참가자 {r.participantCount}명</span>
+            </Link>
+          </div>
         ))}
       </div>
     </div>

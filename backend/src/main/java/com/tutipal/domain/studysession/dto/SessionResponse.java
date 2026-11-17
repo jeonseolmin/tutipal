@@ -14,11 +14,18 @@ public record SessionResponse(
         boolean hideAnswers,
         boolean preferMaterials,
         long participantCount,
-        boolean ended) {
+        boolean ended,
+        /** 내가 즐겨찾기한 방 (홈 목록에서 맨 위) */
+        boolean pinned) {
 
     public static SessionResponse of(StudySession s, SessionRole myRole, long participantCount) {
         return new SessionResponse(s.getId(), s.getTitle(), s.getTopic(),
                 s.getInviteCode(), myRole, s.getDifficulty(), s.isHideAnswers(), s.isPreferMaterials(),
-                participantCount, s.isEnded());
+                participantCount, s.isEnded(), false);
+    }
+
+    public SessionResponse withPinned(boolean pinned) {
+        return new SessionResponse(id, title, topic, inviteCode, myRole, difficulty, hideAnswers, preferMaterials,
+                participantCount, ended, pinned);
     }
 }

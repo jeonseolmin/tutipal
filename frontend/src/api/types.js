@@ -50,6 +50,7 @@
  * @property {number} id
  * @property {string} title
  * @property {string} topic 과목 이름 ("코딩", "한국사", 직접 쓴 이름, 최대 30자)
+ * @property {boolean} pinned 내가 즐겨찾기한 방 (홈 목록 맨 위, GET /api/sessions 에서만 의미 있음)
  * @property {string} inviteCode
  * @property {SessionRole} myRole
  * @property {number} difficulty

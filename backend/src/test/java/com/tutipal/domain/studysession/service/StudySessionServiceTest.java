@@ -105,6 +105,32 @@ class StudySessionServiceTest {
     }
 
     @Test
+    void pinnedRoomsComeFirstThenNewest() {
+        StudySession older = new StudySession("오래된 방", "수학", "B2C3D4", STUDENT);
+        ReflectionTestUtils.setField(older, "id", 5L);
+        StudySession newer = new StudySession("새 방", "영어", "E5F6G7", STUDENT);
+        ReflectionTestUtils.setField(newer, "id", 20L);
+        SessionParticipant pinnedOld = new SessionParticipant(5L, TEACHER, SessionRole.STUDENT);
+        pinnedOld.setPinned(true);
+        when(participants.findByUserId(TEACHER)).thenReturn(java.util.List.of(
+                new SessionParticipant(SID, TEACHER, SessionRole.TEACHER), pinnedOld,
+                new SessionParticipant(20L, TEACHER, SessionRole.STUDENT)));
+        when(sessions.findAllById(any())).thenReturn(java.util.List.of(session, older, newer));
+
+        var list = service.mySessions(TEACHER);
+        assertThat(list).extracting(r -> r.id()).containsExactly(5L, 20L, SID);
+        assertThat(list.getFirst().pinned()).isTrue();
+        assertThat(list.get(1).pinned()).isFalse();
+    }
+
+    @Test
+    void pinOnlyForParticipants() {
+        service.pin(STUDENT, SID, true);
+        assertThat(participants.findBySessionIdAndUserId(SID, STUDENT).orElseThrow().isPinned()).isTrue();
+        assertThat(status(() -> service.pin(STRANGER, SID, true))).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
     void inviteCodesUseOnlyUnambiguousCharacters() {
         for (int i = 0; i < 200; i++) {
             assertThat(InviteCodes.generate()).matches("[" + InviteCodes.ALPHABET + "]{6}");

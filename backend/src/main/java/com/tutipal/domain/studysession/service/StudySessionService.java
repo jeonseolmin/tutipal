@@ -82,15 +82,22 @@ public class StudySessionService {
         return response(session, me.getRole());
     }
 
-    /** 내가 참가 중인(끝나지 않은) 세션, 최근 것부터. */
+    /** 내가 참가 중인(끝나지 않은) 세션: 즐겨찾기 먼저, 그다음 최근 것부터. */
     public List<SessionResponse> mySessions(Long userId) {
-        Map<Long, SessionRole> roles = participants.findByUserId(userId).stream()
-                .collect(Collectors.toMap(SessionParticipant::getSessionId, SessionParticipant::getRole));
-        return sessions.findAllById(roles.keySet()).stream()
+        Map<Long, SessionParticipant> mine = participants.findByUserId(userId).stream()
+                .collect(Collectors.toMap(SessionParticipant::getSessionId, p -> p));
+        return sessions.findAllById(mine.keySet()).stream()
                 .filter(s -> !s.isEnded())
-                .sorted(Comparator.comparing(StudySession::getId).reversed())
-                .map(s -> response(s, roles.get(s.getId())))
+                .sorted(Comparator.comparing((StudySession s) -> !mine.get(s.getId()).isPinned())
+                        .thenComparing(StudySession::getId, Comparator.reverseOrder()))
+                .map(s -> response(s, mine.get(s.getId()).getRole()).withPinned(mine.get(s.getId()).isPinned()))
                 .toList();
+    }
+
+    /** 홈 목록 즐겨찾기 켜고 끄기 (내 참가 정보에만 저장, 참가자가 아니면 404). */
+    @Transactional
+    public void pin(Long userId, Long sessionId, boolean pinned) {
+        requireParticipant(sessionId, userId).setPinned(pinned);
     }
 
     public SessionResponse get(Long userId, Long sessionId) {
